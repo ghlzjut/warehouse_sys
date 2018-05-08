@@ -16,7 +16,7 @@ Including another URLconf
 
 from django.conf.urls import url
 from django.contrib import admin
-from goods_manage.views import toIndex,addIndex,addCloth,show_goods_list,test,addClothSuccess,delCloth,manageGoods
+from goods_manage.views import toIndex,addIndex,addCloth,show_goods_list,test,addClothSuccess,delCloth,manageGoods,inWareHouse,outWareHouse
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -29,7 +29,9 @@ urlpatterns += [
     url(r'^showGoodsList/', show_goods_list),
     url(r'^addClothSuccess/', addClothSuccess),
     url(r'^delCloth/', delCloth),
-    url(r'^manageGoods/', manageGoods)
+    url(r'^manageGoods/', manageGoods),
+    url(r'^inWareHouse/', inWareHouse),
+    url(r'^outWareHouse/', outWareHouse),
 ]
 
 urlpatterns += [

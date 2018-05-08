@@ -5,7 +5,7 @@ import time
 from django.shortcuts import render,render_to_response,HttpResponse
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
-from goods_manage.models import ClothInfo
+from goods_manage.models import ClothInfo,ClothIn,ClothOut
 from django.core import serializers
 import json
 # Create your views here.
@@ -109,3 +109,34 @@ def delCloth(request):
             except ValueError as err:
                 print(err)
     return HttpResponse('success');
+
+#入库操作
+@csrf_exempt
+def inWareHouse(request):
+    if request.method=='GET':
+        newsID=request.GET.get('id')
+        CLOTH_CODE=request.GET.get('CLOTH_CODE')
+        IN_COUNT=request.GET.get('IN_COUNT')
+    print(CLOTH_CODE,IN_COUNT)
+    #插入入库流水
+    try:
+        ClothIn.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_COUNT=IN_COUNT)
+    except ValueError as err:
+        print(err)
+    return HttpResponse('success')
+
+#出库操作
+@csrf_exempt
+def outWareHouse(request):
+    if request.method=='GET':
+        newsID=request.GET.get('id')
+        CLOTH_CODE=request.GET.get('CLOTH_CODE')
+        OUT_COUNT=request.GET.get('OUT_COUNT')
+    print(CLOTH_CODE,OUT_COUNT)
+    #插入出库流水
+    try:
+        ClothOut.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_COUNT=OUT_COUNT)
+    except ValueError as err:
+        print(err)
+    return HttpResponse('success')
+

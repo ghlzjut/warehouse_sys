@@ -25,7 +25,8 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             {field: 'CLOTH_CODE', title: '布样编码', align:'cneter'},
             {field: 'CLOTH_NAME', title: '布样名称', align:'cneter'},
             {field: 'CLOTH_FACTORY', title: '布样厂商', align:'cneter'},
-            {field: 'CLOTH_STATUS', title: '布样状态',  align:'center',templet:"#newsStatus"},
+            {field: 'OUT_COUNT', title: '出库数量', edit:'true',align:'cneter',value:0},
+            {field: 'IN_COUNT', title: '入库数量', edit:'true',align:'cneter'},
             // {field: 'newsLook', title: '浏览权限', align:'center'},
             {title: '操作', width:170, templet:'#newsListBar',fixed:"right",align:"center"}
         ]]
@@ -122,23 +123,34 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
     })
 
     //列表操作
-    table.on('tool(newsList)', function(obj){
+    table.on('tool(GoodsList)', function(obj){
         var layEvent = obj.event,
             data = obj.data;
 
-        if(layEvent === 'edit'){ //编辑
-            addNews(data);
-        } else if(layEvent === 'del'){ //删除
-            layer.confirm('确定删除此文章？',{icon:3, title:'提示信息'},function(index){
-                 $.get("/delCloth",{
-                    id : data.id  //将需要删除的newsId作为参数传入
+        if(layEvent === 'in'){ //入库
+             layer.confirm('确定入库？',{icon:3, title:'提示信息'},function(index){
+                 $.get("/inWareHouse",{
+                     //传入出库数据
+                    id : data.id ,
+                    CLOTH_CODE:data.CLOTH_CODE,
+                    IN_COUNT:data.IN_COUNT
                  },function(data){
                     tableIns.reload();
                     layer.close(index);
                  })
             });
-        } else if(layEvent === 'look'){ //预览
-            layer.alert("此功能暂未开放")
+        } else if(layEvent === 'out'){ //出库
+            layer.confirm('确定出库？',{icon:3, title:'提示信息'},function(index){
+                 $.get("/outWareHouse",{
+                     //传入出库数据
+                    id : data.id ,
+                    CLOTH_CODE:data.CLOTH_CODE,
+                    OUT_COUNT:data.OUT_COUNT
+                 },function(data){
+                    tableIns.reload();
+                    layer.close(index);
+                 })
+            });
         }
     });
 
