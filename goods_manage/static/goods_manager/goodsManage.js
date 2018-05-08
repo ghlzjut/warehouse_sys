@@ -30,7 +30,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             {title: '操作', width:170, templet:'#newsListBar',fixed:"right",align:"center"}
         ]]
     });
-
+    //ss
     //是否置顶
     form.on('switch(newsTop)', function(data){
         var index = layer.msg('修改中，请稍候',{icon: 16,time:false,shade:0.8});
