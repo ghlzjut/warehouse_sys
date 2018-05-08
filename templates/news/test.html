@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<body>
+<p>请输入两个数字</p>
+<form action="/add/" method="get">
+    a: <input type="text" id="a" name="a"> <br>
+    b: <input type="text" id="b" name="b"> <br>
+    <p>result: <span id='result'></span></p>
+    <button type="button" id='sum'>提交</button>
+</form>
+
+
+<div id="dict">Ajax 加载字典</div>
+<p id="dict_result"></p>
+
+<div id="list">Ajax 加载列表</div>
+<p id="list_result"></p>
+
+
+<script src="/static/js/jquery-3.2.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+      $('#dict').click(function(){
+           //方式一 Ajax方式获取Json数据
+            $.ajax({
+                url: '/showGoodsList/',
+                type: 'GET',
+                dataType: 'json',
+                timeout: 1000,
+                cache: false,
+                success: function (data) {
+                    console.log(data);
+                $.each(data.data,function (i,item) {
+                    $('#dict_result').append("<table><tr><td>" + item.CLOTH_FACTORY + "</td> <td>" + item.CLOTH_NAME + "</td></tr></table>");
+{#                    alert(item.CLOTH_FACTORY)#}
+                })
+                } //成功执行方法
+
+            })
+      });
+    });
+</script>
+</body>
+</html>

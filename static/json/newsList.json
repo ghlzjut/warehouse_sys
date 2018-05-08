@@ -1,0 +1,31 @@
+{
+	"code": 0,
+	"msg": "",
+	"count": 15,
+	"data": [
+		{
+			"ID": "1",
+			"newsCode": "XMS001",
+			"newsName": "格子布01",
+			"newsFactory": "顺富纺织",
+			"newsStatus": " ",
+			"newsImg":"../../images/userface1.jpg",
+			"newsLook": "开放浏览",
+			"newsTop": "",
+			"newsTime": "2017-04-14 00:00:00",
+			"content" : "css3用transition实现边框动画效果<img src='../../images/userface1.jpg' alt='文章内容图片'>css3用transition实现边框动画效果css3用transition实现边框动画效果"
+		},
+		{
+			"ID": "2 ",
+			"newsCode": "XMS002",
+			"newsName": "格子布02",
+			"newsFactory": "顺富纺织",
+			"newsStatus": " ",
+			"newsImg":"../../images/userface1.jpg",
+			"newsLook": "开放浏览",
+			"newsTop": "",
+			"newsTime": "2017-04-14 00:00:00",
+			"content" : "css3用transition实现边框动画效果<img src='../../images/userface1.jpg' alt='文章内容图片'>css3用transition实现边框动画效果css3用transition实现边框动画效果"
+		}
+	]
+}
