@@ -25,8 +25,9 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             {field: 'CLOTH_CODE', title: '布样编码', align:'cneter'},
             {field: 'CLOTH_NAME', title: '布样名称', align:'cneter'},
             {field: 'CLOTH_FACTORY', title: '布样厂商', align:'cneter'},
-            {field: 'OUT_COUNT', title: '出库数量', edit:'true',align:'cneter',value:0},
-            {field: 'IN_COUNT', title: '入库数量', edit:'true',align:'cneter'},
+            {field: 'CLOTH_REMAIN', title: '库存数量（米）', align:'cneter'},
+            {field: 'OUT_COUNT', title: '请输入出库数量（米）', edit:'true',align:'cneter',value:0},
+            {field: 'IN_COUNT', title: '请输入入库数量（米）', edit:'true',align:'cneter'},
             // {field: 'newsLook', title: '浏览权限', align:'center'},
             {title: '操作', width:170, templet:'#newsListBar',fixed:"right",align:"center"}
         ]]
@@ -147,6 +148,9 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                     CLOTH_CODE:data.CLOTH_CODE,
                     OUT_COUNT:data.OUT_COUNT
                  },function(data){
+                     if(data=='fail'){
+                         layer.msg('库存数量不足，请补货入库！！！')
+                     }
                     tableIns.reload();
                     layer.close(index);
                  })

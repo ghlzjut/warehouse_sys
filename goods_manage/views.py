@@ -7,12 +7,15 @@ from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 from goods_manage.models import ClothInfo,ClothIn,ClothOut
 from django.core import serializers
+from django.db import connection
 import json
 # Create your views here.
+#跳转到登录页面
+def toLogin(request):
+    return render_to_response('login.html')
 #跳转到主页
 def toIndex(request):
     return render_to_response('index.html')
-
 #跳转到布样管理模块
 def addIndex(request):
     return render_to_response('news/newgoods.html')
@@ -113,6 +116,7 @@ def delCloth(request):
 #入库操作
 @csrf_exempt
 def inWareHouse(request):
+    newsID=CLOTH_CODE=IN_COUNT=0
     if request.method=='GET':
         newsID=request.GET.get('id')
         CLOTH_CODE=request.GET.get('CLOTH_CODE')
@@ -123,6 +127,13 @@ def inWareHouse(request):
         ClothIn.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_COUNT=IN_COUNT)
     except ValueError as err:
         print(err)
+    #增加库存
+    try:
+        clothinfo=ClothInfo.objects.get(id=newsID)
+    except ValueError as err:
+        print(err)
+    clothinfo.CLOTH_REMAIN=clothinfo.CLOTH_REMAIN+float(IN_COUNT)
+    clothinfo.save()
     return HttpResponse('success')
 
 #出库操作
@@ -132,11 +143,21 @@ def outWareHouse(request):
         newsID=request.GET.get('id')
         CLOTH_CODE=request.GET.get('CLOTH_CODE')
         OUT_COUNT=request.GET.get('OUT_COUNT')
-    print(CLOTH_CODE,OUT_COUNT)
     #插入出库流水
     try:
         ClothOut.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_COUNT=OUT_COUNT)
     except ValueError as err:
         print(err)
-    return HttpResponse('success')
+    #削减库存
+    try:
+        clothinfo = ClothInfo.objects.get(id=newsID)
+    except ValueError as err:
+        print(err)
+    if clothinfo.CLOTH_REMAIN >= float(OUT_COUNT):
+        clothinfo.CLOTH_REMAIN = clothinfo.CLOTH_REMAIN - float(OUT_COUNT)
+        clothinfo.save()
+        return HttpResponse('success')
+    else:
+        return HttpResponse('fail')
+
 

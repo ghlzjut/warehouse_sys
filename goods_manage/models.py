@@ -31,7 +31,7 @@ class ClothInfo(models.Model):
 
     # 返回模版信息
     def __unicode__(self):
-        return u'%s %s %s %s %s %s %s %s %s' % (self.id,self.CLOTH_CODE, self.CLOTH_NAME, self.CLOTH_FACTORY,self.CLOTH_STATUS,self.CLOTH_IMG,self.CLOTH_TOP,self.CREATE_TIME,self.CONTENT,self.CLOTH_REMAIN,self.CLOTH_DEAL_REMAIN)
+        return u'%s %s %s %s %s %s %s %s %s %s %s' % (self.id,self.CLOTH_CODE, self.CLOTH_NAME, self.CLOTH_FACTORY,self.CLOTH_STATUS,self.CLOTH_IMG,self.CLOTH_TOP,self.CREATE_TIME,self.CONTENT,self.CLOTH_REMAIN,self.CLOTH_DEAL_REMAIN)
 
 class ClothIn(models.Model):
     # 布样编码

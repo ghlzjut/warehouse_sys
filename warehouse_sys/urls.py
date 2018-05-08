@@ -16,11 +16,12 @@ Including another URLconf
 
 from django.conf.urls import url
 from django.contrib import admin
-from goods_manage.views import toIndex,addIndex,addCloth,show_goods_list,test,addClothSuccess,delCloth,manageGoods,inWareHouse,outWareHouse
+from goods_manage.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', toIndex),
+    url(r'^index/', toIndex),
+    url(r'^$', toLogin),
 ]
 #warehouse manage urls
 urlpatterns += [
