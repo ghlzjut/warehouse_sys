@@ -28,6 +28,21 @@ def addCloth(request):
 def manageGoods(request):
     return render_to_response('news/goodsManage.html')
 
+#登陸驗證
+@csrf_exempt
+def loginSuccess(request):
+    userName=password=code=''
+    if request.method=='GET':
+        userName=request.GET.get('userName')
+        password=request.GET.get('password')
+        code=request.GET.get('code')
+    print(userName,password)
+    if userName=='admin' and password=='xsf345':
+        return HttpResponse('success')
+        # return toIndex(request)
+    else:
+        return HttpResponse('fail')
+
 #接口-返回所有已经添加的布样
 def show_goods_list(request):
     #分页参数page/limit

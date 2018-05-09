@@ -33,6 +33,7 @@ urlpatterns += [
     url(r'^manageGoods/', manageGoods),
     url(r'^inWareHouse/', inWareHouse),
     url(r'^outWareHouse/', outWareHouse),
+    url(r'^loginSuccess/', loginSuccess),
 ]
 
 urlpatterns += [
