@@ -136,7 +136,7 @@ def inWareHouse(request):
         newsID=request.GET.get('id')
         CLOTH_CODE=request.GET.get('CLOTH_CODE')
         IN_COUNT=request.GET.get('IN_COUNT')
-    print(CLOTH_CODE,IN_COUNT)
+    # print(CLOTH_CODE,IN_COUNT)
     #插入入库流水
     try:
         ClothIn.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_COUNT=IN_COUNT)
@@ -145,11 +145,12 @@ def inWareHouse(request):
     #增加库存
     try:
         clothinfo=ClothInfo.objects.get(id=newsID)
+        clothinfo.CLOTH_REMAIN = clothinfo.CLOTH_REMAIN + float(IN_COUNT)
+        clothinfo.save()
+        return HttpResponse('success')
     except ValueError as err:
-        print(err)
-    clothinfo.CLOTH_REMAIN=clothinfo.CLOTH_REMAIN+float(IN_COUNT)
-    clothinfo.save()
-    return HttpResponse('success')
+        return HttpResponse('ValueError')
+
 
 #出库操作
 @csrf_exempt
@@ -168,11 +169,15 @@ def outWareHouse(request):
         clothinfo = ClothInfo.objects.get(id=newsID)
     except ValueError as err:
         print(err)
-    if clothinfo.CLOTH_REMAIN >= float(OUT_COUNT):
-        clothinfo.CLOTH_REMAIN = clothinfo.CLOTH_REMAIN - float(OUT_COUNT)
-        clothinfo.save()
-        return HttpResponse('success')
-    else:
-        return HttpResponse('fail')
+    try:
+        if clothinfo.CLOTH_REMAIN >= float(OUT_COUNT):
+            clothinfo.CLOTH_REMAIN =round(clothinfo.CLOTH_REMAIN - float(OUT_COUNT),2)
+            clothinfo.save()
+            return HttpResponse('success')
+        else:
+            return HttpResponse('fail')
+    except ValueError as err:
+        return HttpResponse('ValueError')
+
 
 
