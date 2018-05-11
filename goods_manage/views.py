@@ -44,7 +44,7 @@ def loginSuccess(request):
         userName=request.GET.get('userName')
         password=request.GET.get('password')
         code=request.GET.get('code')
-    print(userName,password)
+    # print(userName,password)
     if userName=='admin' and password=='xsf345':
         return HttpResponse('success')
         # return toIndex(request)
@@ -122,7 +122,7 @@ def delCloth(request):
     if request.method=='GET':
         newsID=request.GET.getlist('id[]')
         newGoodID=request.GET.get('id')
-    print  newsID,newGoodID
+    # print  newsID,newGoodID
     if newGoodID !=0 :
         try:
             ClothInfo.objects.filter(id=newGoodID).update(CLOTH_STATUS=0)
@@ -231,7 +231,7 @@ def dealWareHouseIn(request):
     #削減出厂加工数量
     try:
         clothinfo=ClothInfo.objects.get(id=newsID)
-        print clothinfo.CLOTH_DEAL_REMAIN,DEAL_COUNT
+        # print clothinfo.CLOTH_DEAL_REMAIN,DEAL_COUNT
         if clothinfo.CLOTH_DEAL_REMAIN >= float(DEAL_COUNT):
             clothinfo.CLOTH_DEAL_REMAIN = round(clothinfo.CLOTH_DEAL_REMAIN - float(DEAL_COUNT),2)
             clothinfo.save()
