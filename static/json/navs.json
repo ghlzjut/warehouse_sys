@@ -10,6 +10,25 @@
 			"icon": "&#xe857;",
 			"href": "/manageGoods",
 			"spread": false
+		},{
+			"title": "出厂加工",
+			"icon": "&#xe857;",
+			"href": "",
+			"spread": false,
+			"children": [
+			{
+				"title": "出厂加工出库",
+				"icon": "&#xe61c;",
+				"href": "/dealGoods",
+				"spread": false
+			},
+			{
+				"title": "出厂加工入库",
+				"icon": "&#xe61c;",
+				"href": "/dealGoodsIn",
+				"spread": false
+			}
+		]
 		}
 	],
 	"memberCenter": [
@@ -17,13 +36,8 @@
 			"title": "用户中心",
 			"icon": "&#xe612;",
 			"href": "page/user/userList.html",
-			"spread": false
-		},
-		{
-			"title": "会员等级",
-			"icon": "icon-vip",
-			"href": "page/user/userGrade.html",
-			"spread": false
+			"spread": false,
+			"target":"_blank"
 		}
 	]
 }

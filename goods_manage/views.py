@@ -5,7 +5,7 @@ import time
 from django.shortcuts import render,render_to_response,HttpResponse
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
-from goods_manage.models import ClothInfo,ClothIn,ClothOut
+from goods_manage.models import ClothInfo,ClothIn,ClothOut,ClothDeal
 from django.core import serializers
 from django.db import connection
 import json
@@ -27,6 +27,14 @@ def addCloth(request):
 #跳转到出入库管理
 def manageGoods(request):
     return render_to_response('news/goodsManage.html')
+
+#跳转出厂加工
+def dealGoods(request):
+    return render_to_response('news/goodsDeal.html')
+
+#跳转到加工完成入库
+def dealGoodsIn(request):
+    return render_to_response('news/re_goodsDeal.html')
 
 #登陸驗證
 @csrf_exempt
@@ -142,6 +150,8 @@ def inWareHouse(request):
         ClothIn.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_COUNT=IN_COUNT)
     except ValueError as err:
         print(err)
+    except:
+        return HttpResponse('notNull')
     #增加库存
     try:
         clothinfo=ClothInfo.objects.get(id=newsID)
@@ -150,7 +160,6 @@ def inWareHouse(request):
         return HttpResponse('success')
     except ValueError as err:
         return HttpResponse('ValueError')
-
 
 #出库操作
 @csrf_exempt
@@ -164,6 +173,8 @@ def outWareHouse(request):
         ClothOut.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_COUNT=OUT_COUNT)
     except ValueError as err:
         print(err)
+    except:
+        return HttpResponse('notNull')
     #削减库存
     try:
         clothinfo = ClothInfo.objects.get(id=newsID)
@@ -179,5 +190,62 @@ def outWareHouse(request):
     except ValueError as err:
         return HttpResponse('ValueError')
 
+#出库加工
+def dealWareHouse(request):
+    if request.method=='GET':
+        newsID=request.GET.get('id')
+        CLOTH_CODE=request.GET.get('CLOTH_CODE')
+        DEAL_COUNT=request.GET.get('DEAL_COUNT')
+    #插入出库加工流水
+    try:
+        ClothDeal.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_COUNT=DEAL_COUNT)
+    except ValueError as err:
+        print(err)
+    except:
+        return HttpResponse('notNull')
+    #削减库存
+    clothinfo = ClothInfo.objects.get(id=newsID)
+    try:
+        if clothinfo.CLOTH_REMAIN >= float(DEAL_COUNT):
+            clothinfo.CLOTH_REMAIN =round(clothinfo.CLOTH_REMAIN - float(DEAL_COUNT),2)
+            clothinfo.save()
+        else:
+            return HttpResponse('fail')
+    except ValueError as err:
+        return HttpResponse('ValueError')
+    #增加出厂加工数量
+    try:
+        clothinfo=ClothInfo.objects.get(id=newsID)
+        clothinfo.CLOTH_DEAL_REMAIN = clothinfo.CLOTH_DEAL_REMAIN + float(DEAL_COUNT)
+        clothinfo.save()
+        return HttpResponse('success')
+    except ValueError as err:
+        print err
+
+#加工完成入库
+def dealWareHouseIn(request):
+    if request.method=='GET':
+        newsID=request.GET.get('id')
+        CLOTH_CODE=request.GET.get('CLOTH_CODE')
+        DEAL_COUNT=request.GET.get('DEAL_COUNT')
+    #削減出厂加工数量
+    try:
+        clothinfo=ClothInfo.objects.get(id=newsID)
+        print clothinfo.CLOTH_DEAL_REMAIN,DEAL_COUNT
+        if clothinfo.CLOTH_DEAL_REMAIN >= float(DEAL_COUNT):
+            clothinfo.CLOTH_DEAL_REMAIN = round(clothinfo.CLOTH_DEAL_REMAIN - float(DEAL_COUNT),2)
+            clothinfo.save()
+        else:
+            return HttpResponse('fail')
+    except ValueError as err:
+        return HttpResponse('ValueError')
+    #增加库存
+    clothinfo = ClothInfo.objects.get(id=newsID)
+    try:
+        clothinfo.CLOTH_REMAIN =clothinfo.CLOTH_REMAIN + float(DEAL_COUNT)
+        clothinfo.save()
+        return HttpResponse('success')
+    except ValueError as err:
+        return HttpResponse('ValueError')
 
 

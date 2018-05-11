@@ -34,6 +34,10 @@ urlpatterns += [
     url(r'^inWareHouse/', inWareHouse),
     url(r'^outWareHouse/', outWareHouse),
     url(r'^loginSuccess/', loginSuccess),
+    url(r'^dealGoods/', dealGoods),
+    url(r'^dealGoodsIn/', dealGoodsIn),
+    url(r'^dealWareHouse/', dealWareHouse),
+    url(r'^dealWareHouseIn/', dealWareHouseIn),
 ]
 
 urlpatterns += [

@@ -139,6 +139,9 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                       if(data=='ValueError'){
                          layer.msg('请输入数字哦！')
                      }
+                       else if(data=='notNull'){
+                         layer.msg('入库数不能为空！')
+                     }
                     tableIns.reload();
                     layer.close(index);
                  })
@@ -151,11 +154,15 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                     CLOTH_CODE:data.CLOTH_CODE,
                     OUT_COUNT:data.OUT_COUNT
                  },function(data){
+                     console.log(data)
                      if(data=='fail'){
                          layer.msg('库存数量不足，请补货入库！！！')
                      }
-                     else if(data='ValueError'){
+                     else if(data=='ValueError'){
                          layer.msg('请输入数字哦！')
+                     }
+                     else if(data=='notNull'){
+                         layer.msg('出库数不能为空！')
                      }
                     tableIns.reload();
                     layer.close(index);
