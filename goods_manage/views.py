@@ -24,8 +24,12 @@ def addIndex(request):
 def addCloth(request):
     return render_to_response('news/newsAdd.html')
 
-#跳转到出入库管理
-def manageGoods(request):
+#跳转到出库管理
+def manageGoodsOut(request):
+    return render_to_response('news/goodsManageOut.html')
+
+#跳转到入库管理
+def manageGoodsIn(request):
     return render_to_response('news/goodsManage.html')
 
 #跳转出厂加工
@@ -167,10 +171,11 @@ def outWareHouse(request):
     if request.method=='GET':
         newsID=request.GET.get('id')
         CLOTH_CODE=request.GET.get('CLOTH_CODE')
+        CUSTOMER=request.GET.get('CUSTOMER')
         OUT_COUNT=request.GET.get('OUT_COUNT')
     #插入出库流水
     try:
-        ClothOut.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_COUNT=OUT_COUNT)
+        ClothOut.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_COUNT=OUT_COUNT,CUSTOMER=CUSTOMER)
     except ValueError as err:
         print(err)
     except:

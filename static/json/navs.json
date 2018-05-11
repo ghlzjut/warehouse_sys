@@ -8,8 +8,22 @@
 		},{
 			"title": "出/入库管理",
 			"icon": "&#xe857;",
-			"href": "/manageGoods",
-			"spread": false
+			"href": "",
+			"spread": false,
+			"children": [
+				{
+				"title": "出库管理",
+				"icon": "&#xe61c;",
+				"href": "/manageGoodsOut",
+				"spread": false
+			},
+			{
+				"title": "入库管理",
+				"icon": "&#xe61c;",
+				"href": "/manageGoodsIn",
+				"spread": false
+			}
+			]
 		},{
 			"title": "出厂加工",
 			"icon": "&#xe857;",

@@ -13,7 +13,7 @@ class ClothInAdmin(admin.ModelAdmin):
 admin.site.register(ClothIn, ClothInAdmin)
 
 class ClothOutAdmin(admin.ModelAdmin):
-    list_display = ('CLOTH_CODE', 'CLOTH_COUNT')
+    list_display = ('CLOTH_CODE', 'CLOTH_COUNT','CUSTOMER')
 admin.site.register(ClothOut, ClothOutAdmin)
 
 class ClothDealAdmin(admin.ModelAdmin):

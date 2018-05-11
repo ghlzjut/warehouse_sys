@@ -30,7 +30,7 @@ urlpatterns += [
     url(r'^showGoodsList/', show_goods_list),
     url(r'^addClothSuccess/', addClothSuccess),
     url(r'^delCloth/', delCloth),
-    url(r'^manageGoods/', manageGoods),
+    url(r'^manageGoodsIn/', manageGoodsIn),
     url(r'^inWareHouse/', inWareHouse),
     url(r'^outWareHouse/', outWareHouse),
     url(r'^loginSuccess/', loginSuccess),
@@ -38,6 +38,7 @@ urlpatterns += [
     url(r'^dealGoodsIn/', dealGoodsIn),
     url(r'^dealWareHouse/', dealWareHouse),
     url(r'^dealWareHouseIn/', dealWareHouseIn),
+    url(r'^manageGoodsOut/', manageGoodsOut),
 ]
 
 urlpatterns += [
