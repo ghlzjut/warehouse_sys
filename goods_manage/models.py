@@ -52,6 +52,10 @@ class ClothOut(models.Model):
     CLOTH_COUNT = models.FloatField(default=0.0)
     #客戶姓名
     CUSTOMER = models.CharField(max_length=50,default="")
+    #布匹单价（元/米）
+    AMOUNT =  models.FloatField(default=0.0)
+    #出库时间
+    CREATE_TIME = models.CharField(max_length=100, default="2018-05-01")
     # 返回模版信息
     def __unicode__(self):
         return u'%s %s %s' % (self.CLOTH_CODE, self.CLOTH_COUNT,self.CUSTOMER)

@@ -26,7 +26,6 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             {field: 'CLOTH_NAME', title: '布样名称', align:'cneter'},
             {field: 'CLOTH_FACTORY', title: '布样厂商', align:'cneter'},
             {field: 'CLOTH_REMAIN', title: '库存数量（米）', align:'cneter'},
-            {field: 'OUT_COUNT', title: '请输入出库数量（米）', edit:'true',align:'cneter',value:0},
             {field: 'IN_COUNT', title: '请输入入库数量（米）', edit:'true',align:'cneter'},
             // {field: 'newsLook', title: '浏览权限', align:'center'},
             {title: '操作', width:170, templet:'#newsListBar',fixed:"right",align:"center"}
@@ -127,7 +126,6 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
     table.on('tool(GoodsList)', function(obj){
         var layEvent = obj.event,
             data = obj.data;
-
         if(layEvent === 'in'){ //入库
              layer.confirm('确定入库？',{icon:3, title:'提示信息'},function(index){
                  $.get("/inWareHouse",{
@@ -141,28 +139,6 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                      }
                        else if(data=='notNull'){
                          layer.msg('入库数不能为空！')
-                     }
-                    tableIns.reload();
-                    layer.close(index);
-                 })
-            });
-        } else if(layEvent === 'out'){ //出库
-            layer.confirm('确定出库？',{icon:3, title:'提示信息'},function(index){
-                 $.get("/outWareHouse",{
-                     //传入出库数据
-                    id : data.id ,
-                    CLOTH_CODE:data.CLOTH_CODE,
-                    OUT_COUNT:data.OUT_COUNT
-                 },function(data){
-                     console.log(data)
-                     if(data=='fail'){
-                         layer.msg('库存数量不足，请补货入库！！！')
-                     }
-                     else if(data=='ValueError'){
-                         layer.msg('请输入数字哦！')
-                     }
-                     else if(data=='notNull'){
-                         layer.msg('出库数不能为空！')
                      }
                     tableIns.reload();
                     layer.close(index);

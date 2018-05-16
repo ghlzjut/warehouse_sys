@@ -78,6 +78,8 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                     body.find(".newsCode").val(edit.CLOTH_CODE);
                     body.find(".newsName").val(edit.CLOTH_NAME);
                     body.find(".newsFactory").val(edit.CLOTH_FACTORY);
+                    body.find(".CLOTH_REMAIN").val(edit.CLOTH_REMAIN);
+                    body.find(".CLOTH_DEAL_REMAIN").val(edit.CLOTH_DEAL_REMAIN);
                     body.find(".thumbImg").attr("src",edit.newsImg);
                     body.find("#news_content").val(edit.CONTENT);
                     body.find(".CLOTH_STATUS select").val(edit.CLOTH_STATUS);

@@ -52,12 +52,39 @@
 			<label class="layui-form-label">布样介绍</label>
 			<div class="layui-input-block">
 				<textarea class="layui-textarea layui-hide" name="content" lay-verify="content" id="news_content"></textarea>
-                <a class="layui-btn layui-btn-sm" lay-filter="addNews" lay-submit><i class="layui-icon">&#xe609;</i>发布</a>
-                <a class="layui-btn layui-btn-primary layui-btn-sm" lay-filter="look" lay-submit>预览</a>
+
 			</div>
 
 		</div>
-	</div>
+    </div>
+    <div class="layui-col-md3 layui-col-xs12">
+        <blockquote class="layui-elem-quote title"><i class="layui-icon">&#xe609;</i> 发布</blockquote>
+        <div class="border">
+            <div class="layui-form-item magt2">
+                <label class="layui-form-label"><i class="seraph icon-xiugai"></i>库 存</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input CLOTH_REMAIN" required lay-verify="CLOTH_REMAIN" placeholder="请输入库存数量（米）">
+                </div>
+            </div>
+            <div class="layui-form-item magt2">
+                <label class="layui-form-label"><i class="seraph icon-xiugai"></i>加 工</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input CLOTH_DEAL_REMAIN" required lay-verify="CLOTH_DEAL_REMAIN" placeholder="请输入出厂加工数量(米)">
+                </div>
+            </div>
+            <div class="layui-form-item newsTop">
+                <label class="layui-form-label"><i class="seraph icon-zhiding"></i> 置 顶</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="newsTop" lay-skin="switch" lay-text="是|否">
+                </div>
+            </div>
+            <hr class="layui-bg-gray" />
+            <div class="layui-right">
+                <a class="layui-btn layui-btn-sm" lay-filter="addNews" lay-submit><i class="layui-icon">&#xe609;</i>发布</a>
+                <a class="layui-btn layui-btn-primary layui-btn-sm" lay-filter="look" lay-submit>预览</a>
+            </div>
+        </div>
+    </div>
 </form>
 <script type="text/javascript" src="/static/layui/layui.js"></script>
 <script type="text/javascript" src="/static/news/newsAdd.js"></script>

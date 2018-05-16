@@ -103,15 +103,17 @@ def addClothSuccess(request):
         newsName=request.POST['newsName']
         newsFactory=request.POST['newsFactory']
         content=request.POST['content']
+        CLOTH_REMAIN=request.POST['CLOTH_REMAIN']
+        CLOTH_DEAL_REMAIN=request.POST['CLOTH_DEAL_REMAIN']
     #通过id是否为空来判断添加/编辑布样内容
     if ID=='':
         try:
-            ClothInfo.objects.create(CLOTH_CODE=newsCode,CLOTH_NAME=newsName,CLOTH_FACTORY=newsFactory,CONTENT=content,CLOTH_STATUS=1,CLOTH_IMG=1,CLOTH_TOP=1,CREATE_TIME=curdate)
+            ClothInfo.objects.create(CLOTH_CODE=newsCode,CLOTH_NAME=newsName,CLOTH_FACTORY=newsFactory,CONTENT=content,CLOTH_STATUS=1,CLOTH_IMG=1,CLOTH_TOP=1,CREATE_TIME=curdate,CLOTH_REMAIN=CLOTH_REMAIN,CLOTH_DEAL_REMAIN=CLOTH_DEAL_REMAIN)
         except ValueError as err:
             print err
     else:
         try:
-            ClothInfo.objects.filter(id=ID).update(CLOTH_CODE=newsCode,CLOTH_NAME=newsName,CLOTH_FACTORY=newsFactory,CONTENT=content)
+            ClothInfo.objects.filter(id=ID).update(CLOTH_CODE=newsCode,CLOTH_NAME=newsName,CLOTH_FACTORY=newsFactory,CONTENT=content,CLOTH_REMAIN=CLOTH_REMAIN,CLOTH_DEAL_REMAIN=CLOTH_DEAL_REMAIN)
         except ValueError as err:
             print err
     return HttpResponse('success');
@@ -168,17 +170,20 @@ def inWareHouse(request):
 #出库操作
 @csrf_exempt
 def outWareHouse(request):
+    curdate = time.strftime('%Y-%m-%d', time.localtime(time.time()))
     if request.method=='GET':
         newsID=request.GET.get('id')
         CLOTH_CODE=request.GET.get('CLOTH_CODE')
         CUSTOMER=request.GET.get('CUSTOMER')
         OUT_COUNT=request.GET.get('OUT_COUNT')
+        AMOUNT=request.GET.get('AMOUNT')
     #插入出库流水
+    print  AMOUNT
     try:
-        ClothOut.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_COUNT=OUT_COUNT,CUSTOMER=CUSTOMER)
+        ClothOut.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_COUNT=OUT_COUNT,CUSTOMER=CUSTOMER,AMOUNT=AMOUNT,CREATE_TIME=curdate)
     except ValueError as err:
         print(err)
-    except:
+    except :
         return HttpResponse('notNull')
     #削减库存
     try:

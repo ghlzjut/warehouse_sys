@@ -75,6 +75,8 @@ layui.use(['form','layer','layedit','laydate','upload'],function(){
             newsFactory : $(".newsFactory").val(),  //布样标题
             content : layedit.getContent(editIndex).split('<audio controls="controls" style="display: none;"></audio>')[0],  //文章内容
             newsImg : $(".thumbImg").attr("src"),  //缩略图
+            CLOTH_REMAIN : $(".CLOTH_REMAIN").val(),//库存
+            CLOTH_DEAL_REMAIN : $(".CLOTH_DEAL_REMAIN").val() //加工
         },function(res){
             // window.location.href="/addgoods/"
             top.layer.msg("文章添加成功！");
@@ -87,7 +89,7 @@ layui.use(['form','layer','layedit','laydate','upload'],function(){
 
     //预览
     form.on("submit(look)",function(){
-        layer.alert("此功能需要前台展示，实际开发中传入对应的必要参数进行文章内容页面访问");
+        layer.alert("功能暂未开发，尽请期待！");
         return false;
     })
 

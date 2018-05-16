@@ -28,6 +28,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             {field: 'CLOTH_REMAIN', title: '库存数量（米）', align:'cneter'},
             {field: 'CUSTOMER', title: '请输入客户名', edit:'true',align:'cneter'},
             {field: 'OUT_COUNT', title: '请输入出库数量（米）', edit:'true',align:'cneter'},
+            {field: 'AMOUNT', title: '价格（元/米）', edit:'true',align:'cneter'},
             // {field: 'newsLook', title: '浏览权限', align:'center'},
             {title: '操作', width:170, templet:'#newsListBar',fixed:"right",align:"center"}
         ]]
@@ -75,7 +76,8 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                     id : data.id ,
                     CLOTH_CODE:data.CLOTH_CODE,
                     CUSTOMER:data.CUSTOMER,
-                    OUT_COUNT:data.OUT_COUNT
+                    OUT_COUNT:data.OUT_COUNT,
+                    AMOUNT:data.AMOUNT
                  },function(data){
                      console.log(data)
                      if(data=='fail'){
