@@ -16,17 +16,35 @@
 <form class="layui-form" lay-filter="example">
 	<blockquote class="layui-elem-quote quoteBox">
 		<form class="layui-form">
-			<div class="layui-inline">
-				<div class="layui-input-inline">
-                    <input type="text" class="layui-input searchVal" placeholder="请输入客户姓名" />
-				</div>
-				<a class="layui-btn search_btn" data-type="reload">搜索</a>
-			</div>
+            <div class="layui-form-item layui-col-space10">
+                <div class="layui-inline">
+                    <label class="layui-form-label"><i class="layui-icon" data-icon="&#xe770;">&#xe770;</i><cite>客户名</cite></label>
+                    <div class="layui-input-inline">
+{#                        <input type="text" class="layui-input customerVal" placeholder="请输入客户姓名" />#}
+                        <select  id="customer" lay-verify="customer" class="layui-select customerVal" lay-search>
+                          <option value="">请选择用户名</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label"><i class="seraph icon-clock"></i>开始时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input beginDateVal" id="beginDate" placeholder="请输入开始时间" />
+                    </div>
+                </div>
+                <div class="layui-inline ">
+                    <label class="layui-form-label"><i class="seraph icon-clock"></i>结束时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input endDateVal" id="endDate" placeholder="请输入结束时间" />
+                    </div>
+                </div>
+                <a class="layui-btn search_btn" data-type="reload">查询</a>
+            </div>
 		</form>
 	</blockquote>
     <table id="Report" lay-filter="Report"></table>
 </form>
 <script type="text/javascript" src="/static/layui/layui.js"></script>
-<script type="text/javascript" src="/static/goods_manager/goodsManage.js"></script>
+<script type="text/javascript" src="/static/financialReport/financialReport.js"></script>
 </body>
 </html>

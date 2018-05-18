@@ -27,6 +27,7 @@ urlpatterns = [
 urlpatterns += [
     url(r'^addgoods/', addIndex),
     url(r'^addcloth/', addCloth),
+    url(r'^Report/', Report),
     url(r'^showGoodsList/', show_goods_list),
     url(r'^addClothSuccess/', addClothSuccess),
     url(r'^delCloth/', delCloth),
@@ -39,6 +40,8 @@ urlpatterns += [
     url(r'^dealWareHouse/', dealWareHouse),
     url(r'^dealWareHouseIn/', dealWareHouseIn),
     url(r'^manageGoodsOut/', manageGoodsOut),
+    url(r'^financialReport/', financialReport),
+    url(r'^getCustomer/', getCustomer),
 ]
 
 urlpatterns += [

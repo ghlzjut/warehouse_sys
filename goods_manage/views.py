@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 import time
+
+from django.db.models import QuerySet
 from django.shortcuts import render,render_to_response,HttpResponse
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
@@ -39,6 +41,24 @@ def dealGoods(request):
 #跳转到加工完成入库
 def dealGoodsIn(request):
     return render_to_response('news/re_goodsDeal.html')
+
+def getCustomer(request):
+    customer_list=[]
+    cursor=connection.cursor()
+    for i in cursor.execute('SELECT CUSTOMER FROM goods_manage_clothout GROUP BY CUSTOMER '):
+        dict={}
+        dict["CUSTOMER"]=i[0]
+        customer_list.append(dict)
+    print  customer_list
+    return HttpResponse(json.dumps(customer_list))
+
+#跳转到财务报表
+def Report(request):
+    customer_list = []
+    cursor = connection.cursor()
+    for i in cursor.execute('SELECT CUSTOMER FROM goods_manage_clothout GROUP BY CUSTOMER '):
+        customer_list.append(i[0])
+    return render_to_response('REPORT/financialReport.html',{'customer_list':json.dumps(customer_list)})
 
 #登陸驗證
 @csrf_exempt
@@ -170,7 +190,7 @@ def inWareHouse(request):
 #出库操作
 @csrf_exempt
 def outWareHouse(request):
-    curdate = time.strftime('%Y-%m-%d', time.localtime(time.time()))
+    curdate = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     if request.method=='GET':
         newsID=request.GET.get('id')
         CLOTH_CODE=request.GET.get('CLOTH_CODE')
@@ -258,4 +278,33 @@ def dealWareHouseIn(request):
     except ValueError as err:
         return HttpResponse('ValueError')
 
-
+#统计报表接口
+def financialReport(request):
+    beginDate='2018-01-01 00:00:00'
+    endDate=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    if request.method=='GET':
+        customer=request.GET.get('CUSTOMER')
+        #判断时间是否为空，为空则不赋值
+        if request.GET.get('BEGINDATE'):
+            beginDate=request.GET.get('BEGINDATE')
+        if request.GET.get('ENDDATE'):
+            endDate=request.GET.get('ENDDATE')
+        page = request.GET.get('page')
+        limit = request.GET.get('limit')
+    begin = (int(page)-1)*int(limit)
+    end = int(page)*int(limit)
+    #定义数据库连接
+    cursor=connection.cursor()
+    query='SELECT CUSTOMER,CLOTH_CODE,sum(CLOTH_COUNT) as COUNT,sum(CLOTH_COUNT*AMOUNT) as AMOUNT from goods_manage_clothout WHERE CREATE_TIME BETWEEN %s AND %s AND CUSTOMER = %s GROUP BY CUSTOMER,CLOTH_CODE limit %s,%s'
+    dict = {"code": 0, "msg": "", "count": 15}
+    list = []
+    for i in cursor.execute(query,[beginDate,endDate,customer,begin,end]):
+        dict1 = {}
+        dict1["CUSTOMER"]=i[0]
+        dict1["CLOTH_CODE"]=i[1]
+        dict1["COUNT"]=i[2]
+        dict1["AMOUNT"]=i[3]
+        list.append(dict1)
+    dict["count"]=len(list)
+    dict["data"]=list
+    return HttpResponse(json.dumps(dict,ensure_ascii=False))

@@ -49,9 +49,8 @@
 		{
 			"title": "财务报表",
 			"icon": "&#xe62c;",
-			"href": "page/user/userList.html",
-			"spread": false,
-			"target":"_blank"
+			"href": "/Report",
+			"spread": false
 		}
 	]
 }
