@@ -66,8 +66,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                     var customer=$('#customer');
                     var data=eval(data);
                     var html="";
-                    layer.msg('初始化客户姓名成功',{icon:1});
-                    console.log(data)
+                    // layer.msg('初始化客户姓名成功',{icon:1});
                     for(var i in data)
                     {
                         html += "<option value="+data[i].CUSTOMER+">"+data[i].CUSTOMER+"</option>";
