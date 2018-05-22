@@ -7,9 +7,9 @@ from django.contrib import admin
 
 class ClothInfo(models.Model):
     #布样ID
-    # ID = models.AutoField(primary_key=True)
+    # ID = models.AutoField()
     #布样编码
-    CLOTH_CODE = models.CharField(max_length=10,default="")
+    CLOTH_CODE =  models.CharField(max_length=10, default="")
     # 布样名称
     CLOTH_NAME = models.CharField(max_length=50,default="")
     # 布样厂商
@@ -70,3 +70,16 @@ class ClothDeal(models.Model):
     # 返回模版信息
     def __unicode__(self):
         return u'%s %s' % (self.CLOTH_CODE, self.CLOTH_COUNT)
+
+#布匹库存信息
+class ClothPieceInfo(models.Model):
+    # 布样编码
+    CLOTH_CODE = models.CharField(max_length=10, default="")
+    #布匹数量
+    CLOTH_PIECE = models.FloatField(default=0.0)
+    #布匹米数
+    CLOTH_PIECE_COUNT = models.FloatField(default=0.0)
+
+    # 返回模版信息
+    def __unicode__(self):
+        return u'%s %s %' % (self.CLOTH_CODE, self.CLOTH_PIECE,self.CLOTH_PIECE_COUNT)

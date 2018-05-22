@@ -6,6 +6,25 @@
 			"href": "/addgoods",
 			"spread": false
 		},{
+			"title": "布匹管理",
+			"icon": "&#xe857;",
+			"href": "/addPieceGoods",
+			"spread": false,
+			"children": [
+				{
+				"title": "布匹查询",
+				"icon": "&#xe61c;",
+				"href": "/queryPieceGoods",
+				"spread": false
+			},
+			{
+				"title": "布匹添加",
+				"icon": "&#xe61c;",
+				"href": "/addPieceGoods",
+				"spread": false
+			}
+			]
+		},{
 			"title": "出/入库管理",
 			"icon": "&#xe857;",
 			"href": "",

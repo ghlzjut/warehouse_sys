@@ -32,7 +32,8 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             {field: 'CUSTOMER', title: '客户名', align:'cneter', fixed:"left"},
             {field: 'CLOTH_CODE', title: '布样编码', align:'cneter'},
             {field: 'COUNT', title: '购买数量（米）', align:'cneter'},
-            {field: 'AMOUNT', title: '购买金额(元)', align:'cneter', fixed:"right"},
+            {field: 'AMOUNT', title: '购买单价（元/米）', align:'cneter'},
+            {field: 'ALL_AMOUNT', title: '购买金额(元)', align:'cneter', fixed:"right"},
         ]]
     });
 

@@ -42,6 +42,12 @@ urlpatterns += [
     url(r'^manageGoodsOut/', manageGoodsOut),
     url(r'^financialReport/', financialReport),
     url(r'^getCustomer/', getCustomer),
+    url(r'^addPieceGoods/', addPieceGoods),
+    url(r'^queryPieceGoods/', queryPieceGoods),
+    url(r'^showPieceGoods/', showPieceGoods),
+    url(r'^delPeiceGoods/', delPeiceGoods),
+    url(r'^addPieceGoodsAction/', addPieceGoodsAction),
+    url(r'^editPeiceGoods/', editPeiceGoods),
 ]
 
 urlpatterns += [

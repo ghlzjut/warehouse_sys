@@ -79,10 +79,15 @@ layui.use(['form','layer','layedit','laydate','upload'],function(){
             CLOTH_DEAL_REMAIN : $(".CLOTH_DEAL_REMAIN").val() //加工
         },function(res){
             // window.location.href="/addgoods/"
-            top.layer.msg("文章添加成功！");
-            layer.closeAll("iframe");
-            //刷新父页面
-            parent.location.reload();
+            if(res=='success'){
+                top.layer.msg("布样添加成功！");
+                layer.closeAll("iframe");
+                //刷新父页面
+                parent.location.reload();
+            }
+            else{
+                layer.msg("请填写所有字段！")
+            }
         })
         return false;
     })
