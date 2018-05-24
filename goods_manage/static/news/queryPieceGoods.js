@@ -27,6 +27,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             {field: 'id', title: 'ID', width:60, align:"center"},
             {field: 'CLOTH_CODE', title: '布样编码', align:'cneter'},
             {field: 'CLOTH_PIECE_COUNT', title: '米数', align:'cneter'},
+            {field: 'REMARKS', title: '备注', align:'cneter'},
             {field: 'CLOTH_PIECE', title: '相同规格布匹数', edit:'true',align:'cneter'},
             {title: '操作', width:170, templet:'#newsListBar',fixed:"right",align:"center"}
         ]]

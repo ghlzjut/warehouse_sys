@@ -26,6 +26,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             {field: 'CLOTH_NAME', title: '布样名称', align:'cneter'},
             {field: 'CLOTH_PIECE_COUNT', title: '米数',edit:'true', align:'cneter'},
             {field: 'CLOTH_PIECE', title: '相同规格布匹数', edit:'true',align:'cneter'},
+            {field: 'REMARKS', title: '备注', edit:'true',align:'cneter'},
             {title: '操作', width:170, templet:'#newsListBar',fixed:"right",align:"center"}
         ]]
     });
@@ -56,7 +57,8 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
              $.get("/addPieceGoodsAction",{
                 CLOTH_CODE : data.CLOTH_CODE,
                 CLOTH_PIECE : data.CLOTH_PIECE,
-                CLOTH_PIECE_COUNT : data.CLOTH_PIECE_COUNT
+                CLOTH_PIECE_COUNT : data.CLOTH_PIECE_COUNT,
+                REMARKS : data.REMARKS
              },function(data){
                  if(data=='pieceFailed'){
                      layer.msg("请输入布匹数！")

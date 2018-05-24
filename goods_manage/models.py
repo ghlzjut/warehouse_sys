@@ -93,7 +93,8 @@ class ClothPieceInfo(models.Model):
     CLOTH_PIECE = models.FloatField(default=0.0)
     #布匹米数
     CLOTH_PIECE_COUNT = models.FloatField(default=0.0)
-
+    #备注
+    REMARKS=models.CharField(max_length=100,default="-")
     # 返回模版信息
     def __unicode__(self):
         return u'%s %s %' % (self.CLOTH_CODE, self.CLOTH_PIECE,self.CLOTH_PIECE_COUNT)

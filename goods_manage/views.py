@@ -478,6 +478,8 @@ def delPeiceGoods(request):
             except ValueError as err:
                 print(err)
     return HttpResponse('success');
+
+#布匹数量添加
 def addPieceGoodsAction(request):
     CLOTH_CODE=CLOTH_PIECE=CLOTH_PIECE_COUNT=0
     if request.method=='GET':
@@ -487,12 +489,17 @@ def addPieceGoodsAction(request):
             CLOTH_PIECE=request.GET.get('CLOTH_PIECE')
         if request.GET.get('CLOTH_PIECE_COUNT'):
             CLOTH_PIECE_COUNT=request.GET.get('CLOTH_PIECE_COUNT')
+        REMARKS=request.GET.get('REMARKS')
     if CLOTH_PIECE==0:
         return HttpResponse('pieceFailed')
     if CLOTH_PIECE_COUNT==0:
         return HttpResponse('pieceCountFailed')
+    #布匹添加后库存随之增加
+    clothinfo=ClothInfo.objects.get(CLOTH_CODE=CLOTH_CODE)
+    clothinfo.CLOTH_REMAIN= clothinfo.CLOTH_REMAIN+float(CLOTH_PIECE)*float(CLOTH_PIECE_COUNT)
+    clothinfo.save()
     try:
-        ClothPieceInfo.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_PIECE=CLOTH_PIECE,CLOTH_PIECE_COUNT=CLOTH_PIECE_COUNT)
+        ClothPieceInfo.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_PIECE=CLOTH_PIECE,CLOTH_PIECE_COUNT=CLOTH_PIECE_COUNT,REMARKS=REMARKS)
     except:
         return  HttpResponse('fail')
     return HttpResponse('success')

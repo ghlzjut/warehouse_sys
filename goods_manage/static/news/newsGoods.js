@@ -25,7 +25,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             {field: 'CLOTH_CODE', title: '布样编码', align:'cneter'},
             {field: 'CLOTH_NAME', title: '布样名称', align:'cneter'},
             {field: 'CLOTH_FACTORY', title: '布样厂商', align:'cneter'},
-            {field: 'CLOTH_STATUS', title: '布样状态',  align:'center',templet:"#newsStatus"},
+            {field: 'CLOTH_REMAIN', title: '库存(米)',  align:'center'},
             // {field: 'newsLook', title: '浏览权限', align:'center'},
             {field: 'CLOTH_TOP', title: '是否置顶', align:'center', templet:function(d){
                 return '<input type="checkbox" name="newsTop" lay-filter="newsTop" lay-skin="switch" lay-text="是|否" '+d.newsTop+'>'

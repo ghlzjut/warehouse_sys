@@ -27,8 +27,8 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             {field: 'id', title: 'ID', width:60, align:"center"},
             {field: 'CLOTH_CODE', title: '布样编码', align:'cneter'},
             {field: 'CLOTH_NAME', title: '布样名称', align:'cneter'},
-            {field: 'CLOTH_REMAIN', title: '布样厂商', align:'cneter'},
-            {field: 'CLOTH_DEAL_REMAIN', title: '布样厂商', align:'cneter'},
+            {field: 'CLOTH_REMAIN', title: '库存', align:'cneter'},
+            {field: 'CLOTH_DEAL_REMAIN', title: '出场加工数', align:'cneter'},
             // {field: 'newsLook', title: '浏览权限', align:'center'},
             {title: '操作', width:170, templet:'#newsListBar',fixed:"right",align:"center"}
         ]]
