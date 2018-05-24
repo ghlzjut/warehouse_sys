@@ -65,10 +65,10 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
         }
     });
 
-    //添加文章
+    //添加布样
     function addNews(edit){
         var index = layui.layer.open({
-            title : "添加文章",
+            title : "添加布样",
             type : 2,
             content : "/addcloth",
             success : function(layero, index){
