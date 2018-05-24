@@ -33,6 +33,20 @@ class ClothInfo(models.Model):
     def __unicode__(self):
         return u'%s %s %s %s %s %s %s %s %s %s %s' % (self.id,self.CLOTH_CODE, self.CLOTH_NAME, self.CLOTH_FACTORY,self.CLOTH_STATUS,self.CLOTH_IMG,self.CLOTH_TOP,self.CREATE_TIME,self.CONTENT,self.CLOTH_REMAIN,self.CLOTH_DEAL_REMAIN)
 
+class WhiteClothInfo(models.Model):
+    # 布样编码
+    CLOTH_CODE = models.CharField(max_length=10, default="")
+    # 布样名称
+    CLOTH_NAME = models.CharField(max_length=50, default="")
+    # 仓库余量
+    CLOTH_REMAIN = models.FloatField(default=0.0)
+    # 布样加工数量
+    CLOTH_DEAL_REMAIN = models.FloatField(default=0.0)
+
+    # 返回模版信息
+    def __unicode__(self):
+        return u'%s %s %s %s %s' % (self.id,self.CLOTH_CODE, self.CLOTH_NAME,self.CLOTH_REMAIN,self.CLOTH_DEAL_REMAIN)
+
 #布匹入库流水
 class ClothIn(models.Model):
     # 布样编码

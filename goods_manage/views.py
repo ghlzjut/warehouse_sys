@@ -7,7 +7,7 @@ from django.db.models import QuerySet
 from django.shortcuts import render,render_to_response,HttpResponse
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
-from goods_manage.models import ClothInfo,ClothIn,ClothOut,ClothDeal,ClothPieceInfo
+from goods_manage.models import ClothInfo,ClothIn,ClothOut,ClothDeal,ClothPieceInfo,WhiteClothInfo
 from django.core import serializers
 from django.db import connection
 import json
@@ -25,6 +25,10 @@ def addIndex(request):
 #跳转添加布样
 def addCloth(request):
     return render_to_response('news/newsAdd.html')
+
+#跳转添加白胚布样
+def addWhiteCloth(request):
+    return render_to_response('news/whiteNewsAdd.html')
 
 #跳转到出库管理
 def manageGoodsOut(request):
@@ -49,6 +53,10 @@ def addPieceGoods(request):
 #跳转到布匹添加
 def queryPieceGoods(request):
     return render_to_response('news/queryPieceGoods.html')
+
+#跳转到白胚布管理
+def toWhiteCloth(request):
+    return render_to_response('news/whilteNewsGoods.html')
 
 #报表数据结转
 def getCustomer(request):
@@ -112,6 +120,42 @@ def show_goods_list(request):
     else:
         list_count = ClothInfo.objects.filter(CLOTH_STATUS=1).filter(CLOTH_CODE__contains=key).count()
         for i in ClothInfo.objects.filter(CLOTH_STATUS=1).filter(CLOTH_CODE__contains=key)[begin:end]:
+            dict1=model_to_dict(i)
+            list.append(dict1)
+    dict["count"]=list_count
+    dict["data"] = list
+    # raw=serializers.serialize('json', ClothInfo.objects.all())
+    # print dict
+    return HttpResponse(json.dumps(dict,ensure_ascii=False))
+
+#接口-返回所有已经添加的白胚布样
+def show_white_cloth(request):
+    #分页参数page/limit
+    page=1
+    limit=15
+    if request.method=='GET':
+        if request.GET.get('page'):
+            page=request.GET.get('page')
+        if request.GET.get('limit'):
+            limit=request.GET.get('limit')
+    begin = (int(page)-1)*int(limit)
+    end = int(page)*int(limit)
+    #搜索关键字
+    key=''
+    if request.GET.get('key'):
+        key=request.GET.get('key')
+    #json拼接
+    dict={"code": 0,"msg": "","count": 15}
+    list=[]
+    #判断关键字是否为空，来选择执行不同的sql
+    if key == None:
+        list_count=WhiteClothInfo.objects.all().count()
+        for i in WhiteClothInfo.objects.all()[begin:end]:
+            dict1=model_to_dict(i)
+            list.append(dict1)
+    else:
+        list_count = WhiteClothInfo.objects.all().filter(CLOTH_CODE__contains=key).count()
+        for i in WhiteClothInfo.objects.all().filter(CLOTH_CODE__contains=key)[begin:end]:
             dict1=model_to_dict(i)
             list.append(dict1)
     dict["count"]=list_count
@@ -187,6 +231,32 @@ def addClothSuccess(request):
             print err
     return HttpResponse('success');
 
+@csrf_exempt
+def addWhiteClothSuccess(request):
+    ID=''
+    CLOTH_REMAIN=CLOTH_DEAL_REMAIN=0
+    #获取前端数据
+    if request.method=='POST':
+        ID = request.POST['ID']
+        newsCode=request.POST['newsCode']
+        newsName=request.POST['newsName']
+        if request.POST['CLOTH_REMAIN']:
+            CLOTH_REMAIN=request.POST['CLOTH_REMAIN']
+        if request.POST['CLOTH_DEAL_REMAIN'] :
+            CLOTH_DEAL_REMAIN=request.POST['CLOTH_DEAL_REMAIN']
+    #通过id是否为空来判断添加/编辑布样内容
+    if ID=='':
+        try:
+            WhiteClothInfo.objects.create(CLOTH_CODE=newsCode,CLOTH_NAME=newsName,CLOTH_REMAIN=CLOTH_REMAIN,CLOTH_DEAL_REMAIN=CLOTH_DEAL_REMAIN)
+        except ValueError as err:
+            print err
+    else:
+        try:
+            WhiteClothInfo.objects.filter(id=ID).update(CLOTH_CODE=newsCode,CLOTH_NAME=newsName,CLOTH_REMAIN=CLOTH_REMAIN,CLOTH_DEAL_REMAIN=CLOTH_DEAL_REMAIN)
+        except ValueError as err:
+            print err
+    return HttpResponse('success');
+
 #删除布样接口
 @csrf_exempt
 def delCloth(request):
@@ -207,6 +277,30 @@ def delCloth(request):
         for ID in newsID:
             try:
                 ClothInfo.objects.filter(id=ID).update(CLOTH_STATUS=0)
+            except ValueError as err:
+                print(err)
+    return HttpResponse('success');
+
+#删除白胚布样接口
+@csrf_exempt
+def delWhiteCloth(request):
+    #批量删除商品的id
+    newsID=[]
+   # 删除商品的id
+    newGoodID=0
+    if request.method=='GET':
+        newsID=request.GET.getlist('id[]')
+        newGoodID=request.GET.get('id')
+    # print  newsID,newGoodID
+    if newGoodID !=0 :
+        try:
+            WhiteClothInfo.objects.filter(id=newGoodID).delete()
+        except ValueError as err:
+            print(err)
+    if  len(newsID) != 0:
+        for ID in newsID:
+            try:
+                WhiteClothInfo.objects.filter(id=ID).delete()
             except ValueError as err:
                 print(err)
     return HttpResponse('success');

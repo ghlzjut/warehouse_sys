@@ -49,6 +49,12 @@
 			"href": "",
 			"spread": false,
 			"children": [
+				{
+				"title": "白胚布布样管理",
+				"icon": "&#xe61c;",
+				"href": "/toWhiteCloth",
+				"spread": false
+			},
 			{
 				"title": "出厂加工出库",
 				"icon": "&#xe61c;",

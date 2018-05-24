@@ -48,6 +48,11 @@ urlpatterns += [
     url(r'^delPeiceGoods/', delPeiceGoods),
     url(r'^addPieceGoodsAction/', addPieceGoodsAction),
     url(r'^editPeiceGoods/', editPeiceGoods),
+    url(r'^toWhiteCloth/', toWhiteCloth),
+    url(r'^showWhiteCloth/', show_white_cloth),
+    url(r'^addWhiteCloth/', addWhiteCloth),
+    url(r'^addWhiteClothSuccess/', addWhiteClothSuccess),
+    url(r'^delWhiteCloth/', delWhiteCloth),
 ]
 
 urlpatterns += [
