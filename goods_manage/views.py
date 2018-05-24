@@ -363,12 +363,14 @@ def outWareHouse(request):
     except ValueError as err:
         return HttpResponse('ValueError')
 
-#出库加工
+#白胚出库加工
 def dealWareHouse(request):
     if request.method=='GET':
         newsID=request.GET.get('id')
         CLOTH_CODE=request.GET.get('CLOTH_CODE')
-        DEAL_COUNT=request.GET.get('DEAL_COUNT')
+        if request.GET.get('DEAL_COUNT'):
+            DEAL_COUNT=request.GET.get('DEAL_COUNT')
+    print DEAL_COUNT,CLOTH_CODE
     #插入出库加工流水
     try:
         ClothDeal.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_COUNT=DEAL_COUNT)
@@ -377,25 +379,25 @@ def dealWareHouse(request):
     except:
         return HttpResponse('notNull')
     #削减库存
-    clothinfo = ClothInfo.objects.get(id=newsID)
+    whiteclothinfo = WhiteClothInfo.objects.get(id=newsID)
     try:
-        if clothinfo.CLOTH_REMAIN >= float(DEAL_COUNT):
-            clothinfo.CLOTH_REMAIN =round(clothinfo.CLOTH_REMAIN - float(DEAL_COUNT),2)
-            clothinfo.save()
+        if whiteclothinfo.CLOTH_REMAIN >= float(DEAL_COUNT):
+            whiteclothinfo.CLOTH_REMAIN =round(whiteclothinfo.CLOTH_REMAIN - float(DEAL_COUNT),2)
+            whiteclothinfo.save()
         else:
             return HttpResponse('fail')
     except ValueError as err:
         return HttpResponse('ValueError')
     #增加出厂加工数量
     try:
-        clothinfo=ClothInfo.objects.get(id=newsID)
+        clothinfo=WhiteClothInfo.objects.get(id=newsID)
         clothinfo.CLOTH_DEAL_REMAIN = clothinfo.CLOTH_DEAL_REMAIN + float(DEAL_COUNT)
         clothinfo.save()
         return HttpResponse('success')
     except ValueError as err:
         print err
 
-#加工完成入库
+#白胚加工完成入库
 def dealWareHouseIn(request):
     if request.method=='GET':
         newsID=request.GET.get('id')
@@ -403,7 +405,7 @@ def dealWareHouseIn(request):
         DEAL_COUNT=request.GET.get('DEAL_COUNT')
     #削減出厂加工数量
     try:
-        clothinfo=ClothInfo.objects.get(id=newsID)
+        clothinfo=WhiteClothInfo.objects.get(id=newsID)
         # print clothinfo.CLOTH_DEAL_REMAIN,DEAL_COUNT
         if clothinfo.CLOTH_DEAL_REMAIN >= float(DEAL_COUNT):
             clothinfo.CLOTH_DEAL_REMAIN = round(clothinfo.CLOTH_DEAL_REMAIN - float(DEAL_COUNT),2)
@@ -413,7 +415,7 @@ def dealWareHouseIn(request):
     except ValueError as err:
         return HttpResponse('ValueError')
     #增加库存
-    clothinfo = ClothInfo.objects.get(id=newsID)
+    clothinfo = WhiteClothInfo.objects.get(id=newsID)
     try:
         clothinfo.CLOTH_REMAIN =clothinfo.CLOTH_REMAIN + float(DEAL_COUNT)
         clothinfo.save()

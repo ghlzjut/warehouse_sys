@@ -18,7 +18,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
     //新闻列表
     var tableIns = table.render({
         elem: '#GoodsList',
-        url : '/showGoodsList',
+        url : '/showWhiteCloth',
         cellMinWidth : 95,
         page : true,
         height : "full-125",
@@ -30,7 +30,6 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             {field: 'id', title: 'ID', width:60, align:"center"},
             {field: 'CLOTH_CODE', title: '布样编码', align:'cneter'},
             {field: 'CLOTH_NAME', title: '布样名称', align:'cneter'},
-            {field: 'CLOTH_FACTORY', title: '布样厂商', align:'cneter'},
             {field: 'CLOTH_REMAIN', title: '库存数量（米）', align:'cneter'},
             {field: 'CLOTH_DEAL_REMAIN', title: '出厂加工数量（米）', align:'cneter'},
             {field: 'DEAL_COUNT', title: '请输入完成加工数量（米）', edit:'true',align:'cneter'},
@@ -43,7 +42,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
     $(".search_btn").on("click",function(){
         if($(".searchVal").val() != ''){
             table.reload("newsListTable",{
-                url : '/showGoodsList',
+                url : '/showWhiteCloth',
                 page: {
                     curr: 1 //重新从第 1 页开始
                 },

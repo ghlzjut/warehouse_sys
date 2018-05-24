@@ -15,7 +15,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
     //新闻列表
     var tableIns = table.render({
         elem: '#GoodsList',
-        url : '/showGoodsList',
+        url : '/showWhiteCloth',
         cellMinWidth : 95,
         page : true,
         height : "full-125",
@@ -27,7 +27,6 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             {field: 'id', title: 'ID', width:60, align:"center"},
             {field: 'CLOTH_CODE', title: '布样编码', align:'cneter'},
             {field: 'CLOTH_NAME', title: '布样名称', align:'cneter'},
-            {field: 'CLOTH_FACTORY', title: '布样厂商', align:'cneter'},
             {field: 'CLOTH_REMAIN', title: '库存数量（米）', align:'cneter'},
             {field: 'CLOTH_DEAL_REMAIN', title: '出厂加工数量（米）', align:'cneter'},
             {field: 'DEAL_COUNT', title: '请输入出库加工数量（米）', edit:'true',align:'cneter'},
@@ -40,7 +39,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
     $(".search_btn").on("click",function(){
         if($(".searchVal").val() != ''){
             table.reload("newsListTable",{
-                url : '/showGoodsList',
+                url : '/showWhiteCloth',
                 page: {
                     curr: 1 //重新从第 1 页开始
                 },
@@ -56,7 +55,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
     table.on('tool(GoodsList)', function(obj){
         var layEvent = obj.event,
             data = obj.data;
-        if(layEvent === 'deal'){ //入库
+        if(layEvent === 'deal'){ //出库
              layer.confirm('确定出库加工？',{icon:3, title:'提示信息'},function(index){
                  $.get("/dealWareHouse",{
                      //传入出库数据
@@ -68,7 +67,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                          layer.msg('请输入数字哦！')
                      }
                        else if(data=='notNull'){
-                         layer.msg('入库数不能为空！')
+                         layer.msg('出库数不能为空！')
                      }
                      else if(data=='fail'){
                          layer.msg('库存不足！')
