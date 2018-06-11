@@ -22,30 +22,19 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
         cols : [[
             {type: "checkbox", fixed:"left", width:50},
             {field: 'id', title: 'ID', width:60, align:"center"},
-            {field: 'CLOTH_CODE', title: '布样编码', align:'cneter'},
-            {field: 'CLOTH_NAME', title: '布样名称', align:'cneter'},
-            {field: 'CLOTH_FACTORY', title: '布样厂商', align:'cneter'},
+            {field: 'CLOTH_CODE', title: '布样编码', align:'cneter' ,sort:'true'},
+            {field: 'CLOTH_NAME', title: '布样名称', align:'cneter' ,sort:'true'},
+            {field: 'CLOTH_FACTORY', title: '布样厂商', align:'cneter' ,sort:'true'},
             {field: 'CLOTH_REMAIN', title: '库存数量（米）', align:'cneter'},
             {field: 'CUSTOMER', title: '请输入客户名', edit:'true',align:'cneter'},
             {field: 'OUT_COUNT', title: '请输入出库数量（米）', edit:'true',align:'cneter'},
             {field: 'AMOUNT', title: '价格（元/米）', edit:'true',align:'cneter'},
+            {field:'CREATE_DATE',title: '出库日期',align:'cneter',edit:'text'},
             // {field: 'newsLook', title: '浏览权限', align:'center'},
             {title: '操作', width:170, templet:'#newsListBar',fixed:"right",align:"center"}
         ]]
     });
 
-    //是否置顶
-    form.on('switch(newsTop)', function(data){
-        var index = layer.msg('修改中，请稍候',{icon: 16,time:false,shade:0.8});
-        setTimeout(function(){
-            layer.close(index);
-            if(data.elem.checked){
-                layer.msg("置顶成功！");
-            }else{
-                layer.msg("取消置顶成功！");
-            }
-        },500);
-    })
 
     //搜索【此功能需要后台配合，所以暂时没有动态效果演示】
     $(".search_btn").on("click",function(){
@@ -64,7 +53,6 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
         }
     });
 
-
     //列表操作
     table.on('tool(GoodsList)', function(obj){
         var layEvent = obj.event,
@@ -77,7 +65,8 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                     CLOTH_CODE:data.CLOTH_CODE,
                     CUSTOMER:data.CUSTOMER,
                     OUT_COUNT:data.OUT_COUNT,
-                    AMOUNT:data.AMOUNT
+                    AMOUNT:data.AMOUNT,
+                    CREATE_DATE:data.CREATE_DATE
                  },function(data){
                      console.log(data)
                      if(data=='fail'){

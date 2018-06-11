@@ -29,7 +29,8 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
         limits : [10,15,20,25],
         id : "newsListTable",
         cols : [[
-            {field: 'CUSTOMER', title: '客户名', align:'cneter', fixed:"left"},
+            {field: 'CREATE_TIME', title: '日期', align:'cneter', fixed:"left"},
+            {field: 'CUSTOMER', title: '客户名', align:'cneter'},
             {field: 'CLOTH_CODE', title: '布样编码', align:'cneter'},
             {field: 'COUNT', title: '购买数量（米）', align:'cneter'},
             {field: 'AMOUNT', title: '购买单价（元/米）', align:'cneter'},

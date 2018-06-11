@@ -53,6 +53,16 @@ urlpatterns += [
     url(r'^addWhiteCloth/', addWhiteCloth),
     url(r'^addWhiteClothSuccess/', addWhiteClothSuccess),
     url(r'^delWhiteCloth/', delWhiteCloth),
+    url(r'^goodsManageOutInfo/', goodsManageOutInfo),
+    url(r'^showGoodsOut/', showGoodsOut),
+    url(r'^editGoodsOut/', editGoodsOut),
+    url(r'^showOrderList/', show_order_list),
+    url(r'^orderManage/', orderManage),
+    url(r'^addOrder/', addOrder),
+    url(r'^addOrderSuccess/', addOrderSuccess),
+    url(r'^delOrder/', delOrder),
+    url(r'^setOrderInfo/', setOrderInfo),
+    url(r'^addToOrder/', addToOrder),
 ]
 
 urlpatterns += [

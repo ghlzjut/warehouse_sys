@@ -25,6 +25,11 @@
 			}
 			]
 		},{
+			"title": "码单管理",
+			"icon": "&#xe857;",
+			"href": "/orderManage",
+			"spread": false
+		},{
 			"title": "出/入库管理",
 			"icon": "&#xe857;",
 			"href": "",
@@ -34,6 +39,11 @@
 				"title": "出库管理",
 				"icon": "&#xe61c;",
 				"href": "/manageGoodsOut",
+				"spread": false
+			},	{
+				"title": "出库详情",
+				"icon": "&#xe61c;",
+				"href": "/goodsManageOutInfo",
 				"spread": false
 			},
 			{

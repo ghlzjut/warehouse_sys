@@ -62,14 +62,14 @@ class ClothIn(models.Model):
 class ClothOut(models.Model):
     # 布样编码
     CLOTH_CODE = models.CharField(max_length=10, default="")
-    #入库数量
+    #出库数量
     CLOTH_COUNT = models.FloatField(default=0.0)
     #客戶姓名
     CUSTOMER = models.CharField(max_length=50,default="")
     #布匹单价（元/米）
     AMOUNT =  models.FloatField(default=0.0)
     #出库时间
-    CREATE_TIME = models.DateTimeField(auto_now=True)
+    CREATE_TIME = models.DateField(auto_now=False)
     # 返回模版信息
     def __unicode__(self):
         return u'%s %s %s' % (self.CLOTH_CODE, self.CLOTH_COUNT,self.CUSTOMER)
@@ -95,6 +95,25 @@ class ClothPieceInfo(models.Model):
     CLOTH_PIECE_COUNT = models.FloatField(default=0.0)
     #备注
     REMARKS=models.CharField(max_length=100,default="-")
+    #码单号
+    ORDER_ID=models.IntegerField(default=0)
     # 返回模版信息
     def __unicode__(self):
-        return u'%s %s %' % (self.CLOTH_CODE, self.CLOTH_PIECE,self.CLOTH_PIECE_COUNT)
+        return u'%s %s %s %s' % (self.CLOTH_CODE, self.CLOTH_PIECE,self.CLOTH_PIECE_COUNT,self.REMARKS,self.ORDER_ID)
+
+#码单信息
+class ClothOrder(models.Model):
+    #客戶姓名
+    CUSTOMER = models.CharField(max_length=50,default="")
+    # 布匹数量
+    CLOTH_PIECE = models.IntegerField(default=0)
+    # 出库米数
+    CLOTH_COUNT = models.FloatField(default=0.0)
+    # 布匹总价
+    AMOUNT = models.FloatField(default=0.0)
+    #下单时间
+    ORDER_TIME = models.DateField(auto_now=False)
+
+    # 返回模版信息
+    def __unicode__(self):
+        return u'%s %s %s %s %s' %(self.CUSTOMER,self.CLOTH_PIECE,self.CLOTH_COUNT,self.AMOUNT,self.ORDER_TIME)

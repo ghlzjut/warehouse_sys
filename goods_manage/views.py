@@ -2,16 +2,27 @@
 from __future__ import unicode_literals
 
 import time
-
+import datetime
 from django.db.models import QuerySet
 from django.shortcuts import render,render_to_response,HttpResponse
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
-from goods_manage.models import ClothInfo,ClothIn,ClothOut,ClothDeal,ClothPieceInfo,WhiteClothInfo
+from goods_manage.models import ClothInfo,ClothIn,ClothOut,ClothDeal,ClothPieceInfo,WhiteClothInfo,ClothOrder
 from django.core import serializers
 from django.db import connection
 import json
 # Create your views here.
+
+#时间类型json
+class CJsonEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime.datetime):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(obj, datetime.date):
+            return obj.strftime("%Y-%m-%d")
+        else:
+            return json.JSONEncoder.default(self, obj)
+
 #跳转到登录页面
 def toLogin(request):
     return render_to_response('login.html')
@@ -57,6 +68,22 @@ def queryPieceGoods(request):
 #跳转到白胚布管理
 def toWhiteCloth(request):
     return render_to_response('news/whilteNewsGoods.html')
+
+#跳转到出库详情
+def goodsManageOutInfo(request):
+    return render_to_response('news/goodsManagerOutInfo.html')
+
+#跳转到码单管理
+def orderManage(request):
+    return render_to_response('news/newOrder.html')
+
+#跳转到码单添加
+def addOrder(request):
+    return render_to_response('news/AddOrder.html')
+
+#跳转到码单信息
+def setOrderInfo(request):
+    return render_to_response('news/setOrderInfo.html')
 
 #报表数据结转
 def getCustomer(request):
@@ -185,18 +212,52 @@ def showPieceGoods(request):
     list=[]
     #判断关键字是否为空，来选择执行不同的sql
     if key == None:
-        list_count=ClothPieceInfo.objects.all().count()
-        for i in ClothPieceInfo.objects.all()[begin:end]:
+        list_count=ClothPieceInfo.objects.all().filter(ORDER_ID=0).count()
+        for i in ClothPieceInfo.objects.all().filter(ORDER_ID=0)[begin:end]:
             dict1=model_to_dict(i)
             list.append(dict1)
     else:
-        list_count = ClothPieceInfo.objects.all().filter(CLOTH_CODE__contains=key).count()
-        for i in ClothPieceInfo.objects.all().filter(CLOTH_CODE__contains=key)[begin:end]:
+        list_count = ClothPieceInfo.objects.all().filter(ORDER_ID=0).filter(CLOTH_CODE__contains=key).count()
+        for i in ClothPieceInfo.objects.all().filter(ORDER_ID=0).filter(CLOTH_CODE__contains=key)[begin:end]:
             dict1=model_to_dict(i)
             list.append(dict1)
     dict["count"]=list_count
     dict["data"] = list
     return HttpResponse(json.dumps(dict,ensure_ascii=False))
+
+#接口--出库详情查询
+def showGoodsOut(request):
+    #分页参数page/limit
+    page=1
+    limit=15
+    if request.method=='GET':
+        if request.GET.get('page'):
+            page=request.GET.get('page')
+        if request.GET.get('limit'):
+            limit=request.GET.get('limit')
+    begin = (int(page)-1)*int(limit)
+    end = int(page)*int(limit)
+    #搜索关键字
+    key=''
+    if request.GET.get('key'):
+        key=request.GET.get('key')
+    #json拼接
+    dict={"code": 0,"msg": "","count": 15}
+    list=[]
+    #判断关键字是否为空，来选择执行不同的sql
+    if key == None:
+        list_count=ClothOut.objects.all().count()
+        for i in ClothOut.objects.all()[begin:end]:
+            dict1=model_to_dict(i)
+            list.append(dict1)
+    else:
+        list_count = ClothOut.objects.all().filter(CLOTH_CODE__contains=key).count()
+        for i in ClothOut.objects.all().filter(CLOTH_CODE__contains=key)[begin:end]:
+            dict1=model_to_dict(i)
+            list.append(dict1)
+    dict["count"]=list_count
+    dict["data"] = list
+    return HttpResponse(json.dumps(dict,ensure_ascii=False,cls=CJsonEncoder))
 
 def test(request):
     return render_to_response('news/test.html')
@@ -231,6 +292,7 @@ def addClothSuccess(request):
             print err
     return HttpResponse('success');
 
+#添加白胚布布样
 @csrf_exempt
 def addWhiteClothSuccess(request):
     ID=''
@@ -333,15 +395,17 @@ def inWareHouse(request):
 #出库操作
 @csrf_exempt
 def outWareHouse(request):
-    curdate = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    curdate = time.strftime("%Y-%m-%d", time.localtime())
     if request.method=='GET':
         newsID=request.GET.get('id')
         CLOTH_CODE=request.GET.get('CLOTH_CODE')
         CUSTOMER=request.GET.get('CUSTOMER')
         OUT_COUNT=request.GET.get('OUT_COUNT')
         AMOUNT=request.GET.get('AMOUNT')
+        if request.GET.get('CREATE_DATE'):
+            curdate = request.GET.get('CREATE_DATE')
+    print curdate
     #插入出库流水
-    print  AMOUNT
     try:
         ClothOut.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_COUNT=OUT_COUNT,CUSTOMER=CUSTOMER,AMOUNT=AMOUNT,CREATE_TIME=curdate)
     except ValueError as err:
@@ -440,21 +504,23 @@ def financialReport(request):
     end = int(page)*int(limit)
     #定义数据库连接
     cursor=connection.cursor()
-    query='SELECT CUSTOMER,CLOTH_CODE,sum(CLOTH_COUNT) as COUNT,AMOUNT,sum(CLOTH_COUNT*AMOUNT) as ALL_AMOUNT from goods_manage_clothout WHERE CREATE_TIME BETWEEN %s AND %s AND CUSTOMER = %s GROUP BY CUSTOMER,CLOTH_CODE,AMOUNT limit %s,%s'
+    query='SELECT DATE(CREATE_TIME) AS CREATE_TIME,CUSTOMER,CLOTH_CODE,sum(CLOTH_COUNT) as COUNT,AMOUNT,sum(CLOTH_COUNT*AMOUNT) as ALL_AMOUNT from goods_manage_clothout WHERE CREATE_TIME BETWEEN %s AND %s AND CUSTOMER = %s GROUP BY CUSTOMER,CLOTH_CODE,AMOUNT,CREATE_TIME limit %s,%s'
     dict = {"code": 0, "msg": "", "count": 15}
     list = []
     for i in cursor.execute(query,[beginDate,endDate,customer,begin,end]):
         dict1 = {}
-        dict1["CUSTOMER"]=i[0]
-        dict1["CLOTH_CODE"]=i[1]
-        dict1["COUNT"]=i[2]
-        dict1["AMOUNT"]=i[3]
-        dict1["ALL_AMOUNT"]=i[4]
+        dict1["CREATE_TIME"]=i[0]
+        dict1["CUSTOMER"]=i[1]
+        dict1["CLOTH_CODE"]=i[2]
+        dict1["COUNT"]=i[3]
+        dict1["AMOUNT"]=i[4]
+        dict1["ALL_AMOUNT"]=round(i[5],2)
         list.append(dict1)
     dict["count"]=len(list)
     dict["data"]=list
     return HttpResponse(json.dumps(dict,ensure_ascii=False))
 
+#布匹删除接口
 def delPeiceGoods(request):
     # 批量删除商品的id
     newsID = []
@@ -481,7 +547,8 @@ def delPeiceGoods(request):
 
 #布匹数量添加
 def addPieceGoodsAction(request):
-    CLOTH_CODE=CLOTH_PIECE=CLOTH_PIECE_COUNT=0
+    REMARKS='-'
+    CLOTH_PIECE=CLOTH_PIECE_COUNT=0
     if request.method=='GET':
         if request.GET.get('CLOTH_CODE'):
             CLOTH_CODE=request.GET.get('CLOTH_CODE')
@@ -489,14 +556,15 @@ def addPieceGoodsAction(request):
             CLOTH_PIECE=request.GET.get('CLOTH_PIECE')
         if request.GET.get('CLOTH_PIECE_COUNT'):
             CLOTH_PIECE_COUNT=request.GET.get('CLOTH_PIECE_COUNT')
-        REMARKS=request.GET.get('REMARKS')
+        if request.GET.get('REMARKS'):
+            REMARKS=request.GET.get('REMARKS')
     if CLOTH_PIECE==0:
         return HttpResponse('pieceFailed')
     if CLOTH_PIECE_COUNT==0:
         return HttpResponse('pieceCountFailed')
     #布匹添加后库存随之增加
-    clothinfo=ClothInfo.objects.get(CLOTH_CODE=CLOTH_CODE)
-    clothinfo.CLOTH_REMAIN= clothinfo.CLOTH_REMAIN+float(CLOTH_PIECE)*float(CLOTH_PIECE_COUNT)
+    clothinfo=ClothInfo.objects.filter(CLOTH_STATUS='1').get(CLOTH_CODE=CLOTH_CODE)
+    clothinfo.CLOTH_REMAIN= round((clothinfo.CLOTH_REMAIN+float(CLOTH_PIECE)*float(CLOTH_PIECE_COUNT)),2)
     clothinfo.save()
     try:
         ClothPieceInfo.objects.create(CLOTH_CODE=CLOTH_CODE,CLOTH_PIECE=CLOTH_PIECE,CLOTH_PIECE_COUNT=CLOTH_PIECE_COUNT,REMARKS=REMARKS)
@@ -504,14 +572,138 @@ def addPieceGoodsAction(request):
         return  HttpResponse('fail')
     return HttpResponse('success')
 
+#布匹编辑
 def editPeiceGoods(request):
+    REMARKS='-'
     if request.method == 'GET':
         if request.GET.get('id'):
             id = request.GET.get('id')
         if request.GET.get('CLOTH_PIECE'):
             CLOTH_PIECE = request.GET.get('CLOTH_PIECE')
+        if request.GET.get('REMARKS'):
+            REMARKS = request.GET.get('REMARKS')
     try:
-        ClothPieceInfo.objects.filter(id=id).update(CLOTH_PIECE=CLOTH_PIECE)
+        ClothPieceInfo.objects.filter(id=id).update(CLOTH_PIECE=CLOTH_PIECE,REMARKS=REMARKS)
     except ValueError as err:
         return HttpResponse(err)
+    return HttpResponse('success')
+
+#出库详情修改
+def editGoodsOut(request):
+    if request.method == 'GET':
+        if request.GET.get('id'):
+            id = request.GET.get('id')
+        if request.GET.get('CUSTOMER'):
+            CUSTOMER = request.GET.get('CUSTOMER')
+        if request.GET.get('CLOTH_COUNT'):
+            CLOTH_COUNT = request.GET.get('CLOTH_COUNT')
+        if request.GET.get('AMOUNT'):
+            AMOUNT = request.GET.get('AMOUNT')
+        if request.GET.get('CLOTH_COUNT'):
+            CREATE_TIME = request.GET.get('CREATE_TIME')
+    try:
+        ClothOut.objects.filter(id=id).update(CUSTOMER=CUSTOMER,CLOTH_COUNT=CLOTH_COUNT,AMOUNT=AMOUNT,CREATE_TIME=CREATE_TIME)
+    except ValueError as err:
+        return HttpResponse(err)
+    return HttpResponse('success')
+
+#码单管理
+def show_order_list(request):
+    #分页参数page/limit
+    page=1
+    limit=15
+    if request.method=='GET':
+        if request.GET.get('page'):
+            page=request.GET.get('page')
+        if request.GET.get('limit'):
+            limit=request.GET.get('limit')
+    begin = (int(page)-1)*int(limit)
+    end = int(page)*int(limit)
+    #搜索关键字
+    key=''
+    if request.GET.get('key'):
+        key=request.GET.get('key')
+    #json拼接
+    dict={"code": 0,"msg": "","count": 15}
+    list=[]
+    #判断关键字是否为空，来选择执行不同的sql
+    if key == None:
+        list_count=ClothOrder.objects.count()
+        for i in ClothOrder.objects[begin:end]:
+            dict1=model_to_dict(i)
+            list.append(dict1)
+    else:
+        list_count = ClothOrder.objects.filter(CUSTOMER__contains=key).count()
+        for i in ClothOrder.objects.filter(CUSTOMER__contains=key)[begin:end]:
+            dict1=model_to_dict(i)
+            list.append(dict1)
+    dict["count"]=list_count
+    dict["data"] = list
+    return HttpResponse(json.dumps(dict,ensure_ascii=False,cls=CJsonEncoder))
+
+@csrf_exempt
+#添加码单
+def addOrderSuccess(request):
+    ORDER_TIME=time.strftime('%Y-%m-%d',time.localtime(time.time()))
+    ID=''
+    CLOTH_PIECE=CLOTH_COUNT=AMOUNT=0
+    print  ORDER_TIME
+    #获取前端数据
+    if request.method=='POST':
+        ID = request.POST['ID']
+        CUSTOMER=request.POST['CUSTOMER']
+        if request.POST['CLOTH_PIECE']:
+            CLOTH_PIECE=request.POST['CLOTH_PIECE']
+        if request.POST['CLOTH_COUNT']:
+            CLOTH_COUNT=request.POST['CLOTH_COUNT']
+        if request.POST['AMOUNT']:
+            AMOUNT=request.POST['AMOUNT']
+        if request.POST['ORDER_TIME']:
+            ORDER_TIME=request.POST['ORDER_TIME']
+    #通过id是否为空来判断添加/编辑码单内容
+    if ID=='':
+        try:
+            ClothOrder.objects.create(CUSTOMER=CUSTOMER,CLOTH_PIECE=CLOTH_PIECE,CLOTH_COUNT=CLOTH_COUNT,AMOUNT=AMOUNT,ORDER_TIME=ORDER_TIME)
+        except ValueError as err:
+            print err
+    else:
+        try:
+            ClothOrder.objects.filter(id=ID).update(CUSTOMER=CUSTOMER,CLOTH_PIECE=CLOTH_PIECE,CLOTH_COUNT=CLOTH_COUNT,AMOUNT=AMOUNT,ORDER_TIME=ORDER_TIME)
+        except ValueError as err:
+            print err
+    return HttpResponse('success');
+
+#删除码单
+def delOrder(request):
+    #批量删除商品的id
+    newsID=[]
+   # 删除商品的id
+    newGoodID=0
+    if request.method=='GET':
+        newsID=request.GET.getlist('id[]')
+        newGoodID=request.GET.get('id')
+    # print  newsID,newGoodID
+    if newGoodID !=0 :
+        try:
+            ClothOrder.objects.filter(id=newGoodID).delete()
+        except ValueError as err:
+            print(err)
+    if  len(newsID) != 0:
+        for ID in newsID:
+            try:
+                ClothOrder.objects.filter(id=ID).delete()
+            except ValueError as err:
+                print(err)
+    return HttpResponse('success')
+
+#添加布匹至码单
+def addToOrder(request):
+    if request.method=='GET':
+        id=int(request.GET.get('id'))
+        PieceId=int(request.GET.get('PieceId'))
+    try:
+        #将布匹添加到码单
+        ClothPieceInfo.objects.filter(id=PieceId).update(ORDER_ID=id)
+    except ValueError as err:
+        print err
     return HttpResponse('success')

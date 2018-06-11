@@ -27,7 +27,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             {field: 'id', title: 'ID', width:60, align:"center"},
             {field: 'CLOTH_CODE', title: '布样编码', align:'cneter'},
             {field: 'CLOTH_PIECE_COUNT', title: '米数', align:'cneter'},
-            {field: 'REMARKS', title: '备注', align:'cneter'},
+            {field: 'REMARKS', title: '备注', edit:'true', align:'cneter'},
             {field: 'CLOTH_PIECE', title: '相同规格布匹数', edit:'true',align:'cneter'},
             {title: '操作', width:170, templet:'#newsListBar',fixed:"right",align:"center"}
         ]]
@@ -103,7 +103,8 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
            layer.confirm('确认修改？', {icon: 3, title: '提示信息'}, function (index) {
                $.get("/editPeiceGoods", {
                    id: data.id,  //将需要修改的newsId作为参数传入
-                   CLOTH_PIECE:data.CLOTH_PIECE
+                   CLOTH_PIECE:data.CLOTH_PIECE,
+                   REMARKS : data.REMARKS
                }, function (data) {
                    tableIns.reload();
                    layer.close(index);

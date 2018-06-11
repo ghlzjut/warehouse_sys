@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>鑫顺褔仓管系统</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="/static/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="/static/css/public.css" media="all" />
+</head>
+<body class="childrenBody">
+<form class="layui-form layui-row layui-col-space10">
+    <div class="layui-col-md8 layui-col-xs12 layui-col-md-offset2">
+        <blockquote class="layui-elem-quote title"><i class="layui-icon">&#xe609;</i> 码单</blockquote>
+        <div class="border">
+            <div class="layui-form-item magt2">
+                <label class="layui-form-label"><i class="seraph icon-xiugai"></i>码单号</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input layui-disabled ID" required lay-verify="ID" placeholder="码单号自动生成">
+                </div>
+            </div>
+            <div class="layui-form-item magt2">
+                <label class="layui-form-label"><i class="seraph icon-xiugai"></i>客户名</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input CUSTOMER" required lay-verify="CUSTOMER" placeholder="请输入客户名">
+                </div>
+            </div>
+            <div class="layui-form-item magt2">
+                <label class="layui-form-label"><i class="seraph icon-xiugai"></i>布匹数</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input CLOTH_PIECE" required lay-verify="CLOTH_PIECE" placeholder="请输入布匹数">
+                </div>
+            </div>
+            <div class="layui-form-item magt2">
+                <label class="layui-form-label"><i class="seraph icon-xiugai"></i>总米数</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input CLOTH_COUNT" required lay-verify="CLOTH_COUNT" placeholder="请输入布匹总米数（米）">
+                </div>
+            </div>
+            <div class="layui-form-item magt2">
+                <label class="layui-form-label"><i class="seraph icon-xiugai"></i>总金额</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input AMOUNT" required lay-verify="AMOUNT" placeholder="请输入订单金额（元）">
+                </div>
+            </div>
+            <div class="layui-form-item magt2">
+                <label class="layui-form-label"><i class="seraph icon-xiugai"></i>时间</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input ORDER_TIME" required lay-verify="ORDER_TIME" placeholder="请输入下单时间，时间格式“2018-01-01”,默认为当前时间">
+                </div>
+            </div>
+            <hr class="layui-bg-gray" />
+            <div class="layui-right">
+                <a class="layui-btn layui-btn-sm" lay-filter="addNews" lay-submit><i class="layui-icon">&#xe609;</i>下单</a>
+{#                <a class="layui-btn layui-btn-primary layui-btn-sm" lay-filter="look" lay-submit>预览</a>#}
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript" src="/static/news/AddOrder.js"></script>
+</body>
+</html>
