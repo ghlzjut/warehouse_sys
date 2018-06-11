@@ -30,8 +30,8 @@
 				</div>
 				<a class="layui-btn search_btn" data-type="reload">搜索</a>
 			</div>
-            <div class="layui-inline">
-				<a class="layui-btn layui-btn-danger layui-btn-normal orderDetail_btn">码单详情<span class="layui-badge-dot layui-bg-orange"></span></a>
+			<div class="layui-inline">
+				<a class="layui-btn layui-btn-danger layui-btn-normal setOrder_btn">确认下单</a>
 			</div>
 		</form>
 	</blockquote>
@@ -39,10 +39,11 @@
     <!--审核状态-->
 	<!--操作-->
 	<script type="text/html" id="newsListBar">
-        <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add">添加至码单</a>
+        <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">修改</a>
+		<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
 	</script>
 </form>
 <script type="text/javascript" src="/static/layui/layui.js"></script>
-<script type="text/javascript" src="/static/news/setOrderInfo.js"></script>
+<script type="text/javascript" src="/static/news/OrderDetail.js"></script>
 </body>
 </html>

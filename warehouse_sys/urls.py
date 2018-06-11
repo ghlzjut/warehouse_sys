@@ -63,6 +63,11 @@ urlpatterns += [
     url(r'^delOrder/', delOrder),
     url(r'^setOrderInfo/', setOrderInfo),
     url(r'^addToOrder/', addToOrder),
+    url(r'^orderDetail/', orderDetail),
+    url(r'^showOrderDetail/', showOrderDetail),
+    url(r'^removePiece/', removePiece),
+    url(r'^editOrderPiece/', editOrderPiece),
+    url(r'^placeOrder/', placeOrder),
 ]
 
 urlpatterns += [

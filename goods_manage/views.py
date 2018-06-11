@@ -85,6 +85,10 @@ def addOrder(request):
 def setOrderInfo(request):
     return render_to_response('news/setOrderInfo.html')
 
+#跳转到码单详情
+def orderDetail(request):
+    return render_to_response('news/OrderDetail.html')
+
 #报表数据结转
 def getCustomer(request):
     customer_list=[]
@@ -548,14 +552,13 @@ def delPeiceGoods(request):
 #布匹数量添加
 def addPieceGoodsAction(request):
     REMARKS='-'
-    CLOTH_PIECE=CLOTH_PIECE_COUNT=0
+    CLOTH_PIECE=0
+    CLOTH_PIECE_COUNT=1.0
     if request.method=='GET':
         if request.GET.get('CLOTH_CODE'):
             CLOTH_CODE=request.GET.get('CLOTH_CODE')
         if request.GET.get('CLOTH_PIECE'):
             CLOTH_PIECE=request.GET.get('CLOTH_PIECE')
-        if request.GET.get('CLOTH_PIECE_COUNT'):
-            CLOTH_PIECE_COUNT=request.GET.get('CLOTH_PIECE_COUNT')
         if request.GET.get('REMARKS'):
             REMARKS=request.GET.get('REMARKS')
     if CLOTH_PIECE==0:
@@ -707,3 +710,59 @@ def addToOrder(request):
     except ValueError as err:
         print err
     return HttpResponse('success')
+
+#码单详情接口
+def showOrderDetail(request):
+    if request.method=='GET':
+        orderNo=int(request.GET.get('orderNo'))
+    dict = {"code": 0, "msg": "", "count": 15}
+    list = []
+    # 判断关键字是否为空，来选择执行不同的sql
+    list_count = ClothPieceInfo.objects.all().filter(ORDER_ID=orderNo).count()
+    for i in ClothPieceInfo.objects.all().filter(ORDER_ID=orderNo):
+        dict1 = model_to_dict(i)
+        list.append(dict1)
+    dict["count"] = list_count
+    dict["data"] = list
+    return HttpResponse(json.dumps(dict,ensure_ascii=False))
+
+#将布匹移出码单
+def removePiece(request):
+    if request.method=='GET':
+        PIECE_ID=request.GET.get('id')
+    try:
+        ClothPieceInfo.objects.filter(id=PIECE_ID).update(ORDER_ID=0)
+    except ValueError as err:
+        print err
+    return HttpResponse('success')
+
+#修改码单布匹
+def editOrderPiece(request):
+    if request.method=='GET':
+        PIECE_ID=request.GET.get('id')
+        EDIT_CLOTH_COUNT=float(request.GET.get('EDIT_CLOTH_COUNT'))
+        AMOUNT=float(request.GET.get('AMOUNT'))
+        REMARKS=request.GET.get('REMARKS')
+    try:
+        ClothPieceInfo.objects.filter(id=PIECE_ID).update(EDIT_CLOTH_COUNT=EDIT_CLOTH_COUNT,REMARKS=REMARKS,AMOUNT=AMOUNT)
+    except ValueError as err:
+        print err
+    return HttpResponse('success')
+
+#下单
+def placeOrder(request):
+    if request.method=='GET':
+        ORDER_ID=int(request.GET.get('id'))
+    cursor = connection.cursor()
+    query='SELECT count(id) AS CLOTH_PIECE,sum(EDIT_CLOTH_COUNT) AS CLOTH_COUNT ,sum(EDIT_CLOTH_COUNT*AMOUNT) AS AMOUNT from goods_manage_clothpieceinfo WHERE ORDER_ID= %s'
+    for i in cursor.execute(query,[ORDER_ID]):
+        CLOTH_PIECE=i[0]
+        CLOTH_COUNT=i[1]
+        AMOUNT=i[2]
+    try:
+        ClothOrder.objects.filter(id=ORDER_ID).update(CLOTH_PIECE=CLOTH_PIECE,CLOTH_COUNT=CLOTH_COUNT,AMOUNT=AMOUNT)
+    except ValueError as err:
+        print err
+    return HttpResponse('success')
+
+

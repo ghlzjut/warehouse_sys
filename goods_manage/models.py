@@ -93,10 +93,14 @@ class ClothPieceInfo(models.Model):
     CLOTH_PIECE = models.FloatField(default=0.0)
     #布匹米数
     CLOTH_PIECE_COUNT = models.FloatField(default=0.0)
+    #更改米数
+    EDIT_CLOTH_COUNT=models.FloatField(default=0.0)
     #备注
     REMARKS=models.CharField(max_length=100,default="-")
     #码单号
     ORDER_ID=models.IntegerField(default=0)
+    # 布匹单价（元/米）
+    AMOUNT = models.FloatField(default=0.0)
     # 返回模版信息
     def __unicode__(self):
         return u'%s %s %s %s' % (self.CLOTH_CODE, self.CLOTH_PIECE,self.CLOTH_PIECE_COUNT,self.REMARKS,self.ORDER_ID)
