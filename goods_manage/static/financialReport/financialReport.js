@@ -12,11 +12,11 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
     //时间框
     laydate.render({
        elem:'#beginDate',
-       type:"datetime"
+       type:"date"
     });
       laydate.render({
        elem:'#endDate',
-       type:"datetime"
+       type:"date"
     });
     //新闻列表
     var tableIns = table.render({
@@ -29,12 +29,12 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
         limits : [10,15,20,25],
         id : "newsListTable",
         cols : [[
-            {field: 'CREATE_TIME', title: '日期', align:'cneter', fixed:"left"},
+            {field: 'ORDER_TIME', title: '日期', align:'cneter', fixed:"left"},
             {field: 'CUSTOMER', title: '客户名', align:'cneter'},
             {field: 'CLOTH_CODE', title: '布样编码', align:'cneter'},
-            {field: 'COUNT', title: '购买数量（米）', align:'cneter'},
-            {field: 'AMOUNT', title: '购买单价（元/米）', align:'cneter'},
-            {field: 'ALL_AMOUNT', title: '购买金额(元)', align:'cneter', fixed:"right"},
+            {field: 'CLOTH_PIECE', title: '布匹数', align:'cneter'},
+            {field: 'EDIT_CLOTH_COUNT', title: '总米数（米）', align:'cneter'},
+            {field: 'AMOUNT', title: '购买金额(元)', align:'cneter', fixed:"right"},
         ]]
     });
 

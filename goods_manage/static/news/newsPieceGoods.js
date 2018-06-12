@@ -59,9 +59,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                 CLOTH_PIECE_COUNT : data.CLOTH_PIECE_COUNT,
                 REMARKS : data.REMARKS
              },function(data){
-                 if(data=='pieceFailed'){
-                     layer.msg("请输入布匹数！")
-                 }else if(data=='pieceCountFailed'){
+                 if(data=='pieceCountFailed'){
                      layer.msg("请输入米数！")
                  }else if(data=='fail'){
                      layer.msg("未知错误！")

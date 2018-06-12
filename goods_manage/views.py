@@ -93,7 +93,7 @@ def orderDetail(request):
 def getCustomer(request):
     customer_list=[]
     cursor=connection.cursor()
-    for i in cursor.execute('SELECT CUSTOMER FROM goods_manage_clothout GROUP BY CUSTOMER '):
+    for i in cursor.execute('SELECT CUSTOMER FROM goods_manage_clothorder GROUP BY CUSTOMER '):
         dict={}
         dict["CUSTOMER"]=i[0]
         customer_list.append(dict)
@@ -104,7 +104,7 @@ def getCustomer(request):
 def Report(request):
     customer_list = []
     cursor = connection.cursor()
-    for i in cursor.execute('SELECT CUSTOMER FROM goods_manage_clothout GROUP BY CUSTOMER '):
+    for i in cursor.execute('SELECT CUSTOMER FROM goods_manage_clothorder GROUP BY CUSTOMER '):
         customer_list.append(i[0])
     return render_to_response('REPORT/financialReport.html',{'customer_list':json.dumps(customer_list)})
 
@@ -134,7 +134,7 @@ def show_goods_list(request):
         if request.GET.get('limit'):
             limit=request.GET.get('limit')
     begin = (int(page)-1)*int(limit)
-    end = int(page)*int(limit)
+    end = int(limit)
     #搜索关键字
     key=''
     if request.GET.get('key'):
@@ -143,15 +143,43 @@ def show_goods_list(request):
     dict={"code": 0,"msg": "","count": 15}
     list=[]
     #判断关键字是否为空，来选择执行不同的sql
-    if key == None:
-        list_count=ClothInfo.objects.filter(CLOTH_STATUS=1).count()
-        for i in ClothInfo.objects.filter(CLOTH_STATUS=1)[begin:end]:
-            dict1=model_to_dict(i)
+    if key == '':
+        list_count = ClothInfo.objects.filter(CLOTH_STATUS=1).count()
+        cursor = connection.cursor()
+        query='SELECT i.id,i.CLOTH_CODE,i.CLOTH_NAME,i.CLOTH_FACTORY,sum(p.CLOTH_PIECE_COUNT) AS CLOTH_REMAIN,i.CREATE_TIME,i.CONTENT,i.CLOTH_DEAL_REMAIN FROM goods_manage_clothinfo i LEFT JOIN goods_manage_clothpieceinfo p ON i.CLOTH_CODE = p.CLOTH_CODE WHERE CLOTH_STATUS = 1 GROUP BY i.CLOTH_CODE LIMIT %s,%s'
+        for i in cursor.execute(query,[begin,end]):
+            dict1={}
+            dict1["id"]=i[0]
+            dict1["CLOTH_CODE"]=i[1]
+            dict1["CLOTH_NAME"]=i[2]
+            dict1["CLOTH_FACTORY"]=i[3]
+            if i[4]==None:
+                dict1["CLOTH_REMAIN"]=0
+            else:
+                dict1["CLOTH_REMAIN"] = round(i[4],2)
+            dict1["CREATE_TIME"]=i[5]
+            dict1["CONTENT"] = i[6]
+            dict1["CLOTH_DEAL_REMAIN"] = i[7]
             list.append(dict1)
     else:
+        print type(key)
         list_count = ClothInfo.objects.filter(CLOTH_STATUS=1).filter(CLOTH_CODE__contains=key).count()
-        for i in ClothInfo.objects.filter(CLOTH_STATUS=1).filter(CLOTH_CODE__contains=key)[begin:end]:
-            dict1=model_to_dict(i)
+        key=key+'%'
+        cursor = connection.cursor()
+        query='SELECT i.id,i.CLOTH_CODE,i.CLOTH_NAME,i.CLOTH_FACTORY,sum(p.CLOTH_PIECE_COUNT) AS CLOTH_REMAIN,i.CREATE_TIME,i.CONTENT,i.CLOTH_DEAL_REMAIN FROM goods_manage_clothinfo i LEFT JOIN goods_manage_clothpieceinfo p ON i.CLOTH_CODE = p.CLOTH_CODE WHERE CLOTH_STATUS = 1 AND i.CLOTH_CODE LIKE %s GROUP BY i.CLOTH_CODE LIMIT %s,%s'
+        for i in cursor.execute(query,[key,begin,end]):
+            dict1 = {}
+            dict1["id"]=i[0]
+            dict1["CLOTH_CODE"] = i[1]
+            dict1["CLOTH_NAME"] = i[2]
+            dict1["CLOTH_FACTORY"] = i[3]
+            if i[4]==None:
+                dict1["CLOTH_REMAIN"]=0
+            else:
+                dict1["CLOTH_REMAIN"] = round(i[4],2)
+            dict1["CREATE_TIME"] = i[5]
+            dict1["CONTENT"] = i[6]
+            dict1["CLOTH_DEAL_REMAIN"] = i[7]
             list.append(dict1)
     dict["count"]=list_count
     dict["data"] = list
@@ -508,21 +536,24 @@ def financialReport(request):
     end = int(page)*int(limit)
     #定义数据库连接
     cursor=connection.cursor()
-    query='SELECT DATE(CREATE_TIME) AS CREATE_TIME,CUSTOMER,CLOTH_CODE,sum(CLOTH_COUNT) as COUNT,AMOUNT,sum(CLOTH_COUNT*AMOUNT) as ALL_AMOUNT from goods_manage_clothout WHERE CREATE_TIME BETWEEN %s AND %s AND CUSTOMER = %s GROUP BY CUSTOMER,CLOTH_CODE,AMOUNT,CREATE_TIME limit %s,%s'
+    query='SELECT o.CUSTOMER,o.ORDER_TIME,p.CLOTH_CODE,sum(p.CLOTH_PIECE) AS CLOTH_PIECE,sum(EDIT_CLOTH_COUNT) AS EDIT_CLOTH_COUNT,sum(p.EDIT_CLOTH_COUNT*p.AMOUNT) AS AMOUNT from goods_manage_clothorder o LEFT JOIN goods_manage_clothpieceinfo p on o.id=p.ORDER_ID WHERE ORDER_TIME BETWEEN %s AND %s AND CUSTOMER = %s  GROUP BY o.CUSTOMER,o.ORDER_TIME,p.CLOTH_CODE limit %s,%s'
     dict = {"code": 0, "msg": "", "count": 15}
     list = []
     for i in cursor.execute(query,[beginDate,endDate,customer,begin,end]):
         dict1 = {}
-        dict1["CREATE_TIME"]=i[0]
-        dict1["CUSTOMER"]=i[1]
+        dict1["CUSTOMER"]=i[0]
+        dict1["ORDER_TIME"]=i[1]
         dict1["CLOTH_CODE"]=i[2]
-        dict1["COUNT"]=i[3]
-        dict1["AMOUNT"]=i[4]
-        dict1["ALL_AMOUNT"]=round(i[5],2)
+        dict1["CLOTH_PIECE"]=i[3]
+        dict1["EDIT_CLOTH_COUNT"]=i[4]
+        if i[5]==None:
+            dict1["AMOUNT"]=0
+        else:
+            dict1["AMOUNT"]=round(i[5],2)
         list.append(dict1)
     dict["count"]=len(list)
     dict["data"]=list
-    return HttpResponse(json.dumps(dict,ensure_ascii=False))
+    return HttpResponse(json.dumps(dict,ensure_ascii=False,cls=CJsonEncoder))
 
 #布匹删除接口
 def delPeiceGoods(request):
@@ -552,17 +583,15 @@ def delPeiceGoods(request):
 #布匹数量添加
 def addPieceGoodsAction(request):
     REMARKS='-'
-    CLOTH_PIECE=0
-    CLOTH_PIECE_COUNT=1.0
+    CLOTH_PIECE=1
+    CLOTH_PIECE_COUNT=0.0
     if request.method=='GET':
         if request.GET.get('CLOTH_CODE'):
             CLOTH_CODE=request.GET.get('CLOTH_CODE')
-        if request.GET.get('CLOTH_PIECE'):
-            CLOTH_PIECE=request.GET.get('CLOTH_PIECE')
+        if request.GET.get('CLOTH_PIECE_COUNT'):
+            CLOTH_PIECE_COUNT=request.GET.get('CLOTH_PIECE_COUNT')
         if request.GET.get('REMARKS'):
             REMARKS=request.GET.get('REMARKS')
-    if CLOTH_PIECE==0:
-        return HttpResponse('pieceFailed')
     if CLOTH_PIECE_COUNT==0:
         return HttpResponse('pieceCountFailed')
     #布匹添加后库存随之增加
@@ -650,7 +679,6 @@ def addOrderSuccess(request):
     ORDER_TIME=time.strftime('%Y-%m-%d',time.localtime(time.time()))
     ID=''
     CLOTH_PIECE=CLOTH_COUNT=AMOUNT=0
-    print  ORDER_TIME
     #获取前端数据
     if request.method=='POST':
         ID = request.POST['ID']
@@ -731,7 +759,7 @@ def removePiece(request):
     if request.method=='GET':
         PIECE_ID=request.GET.get('id')
     try:
-        ClothPieceInfo.objects.filter(id=PIECE_ID).update(ORDER_ID=0)
+        ClothPieceInfo.objects.filter(id=PIECE_ID).update(ORDER_ID=0,EDIT_CLOTH_COUNT=0,AMOUNT=0)
     except ValueError as err:
         print err
     return HttpResponse('success')
@@ -756,9 +784,18 @@ def placeOrder(request):
     cursor = connection.cursor()
     query='SELECT count(id) AS CLOTH_PIECE,sum(EDIT_CLOTH_COUNT) AS CLOTH_COUNT ,sum(EDIT_CLOTH_COUNT*AMOUNT) AS AMOUNT from goods_manage_clothpieceinfo WHERE ORDER_ID= %s'
     for i in cursor.execute(query,[ORDER_ID]):
-        CLOTH_PIECE=i[0]
-        CLOTH_COUNT=i[1]
-        AMOUNT=i[2]
+        if i[0]==None:
+            CLOTH_PIECE=0
+        else:
+            CLOTH_PIECE=i[0]
+        if i[1]==None:
+            CLOTH_COUNT=0
+        else:
+            CLOTH_COUNT=i[1]
+        if i[2]==None:
+            AMOUNT=0
+        else:
+            AMOUNT=i[2]
     try:
         ClothOrder.objects.filter(id=ORDER_ID).update(CLOTH_PIECE=CLOTH_PIECE,CLOTH_COUNT=CLOTH_COUNT,AMOUNT=AMOUNT)
     except ValueError as err:
