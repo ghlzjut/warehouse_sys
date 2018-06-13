@@ -26,9 +26,18 @@ class CJsonEncoder(json.JSONEncoder):
 #跳转到登录页面
 def toLogin(request):
     return render_to_response('login.html')
+
+
 #跳转到主页
+@csrf_exempt
 def toIndex(request):
-    return render_to_response('index.html')
+    if request.method=='POST':
+        username=request.POST['username']
+        password=request.POST['password']
+    if username=='admin'and password=='xsf345':
+        return render_to_response('index.html')
+    else:
+        return HttpResponse('密码错误')
 #跳转到布样管理模块
 def addIndex(request):
     return render_to_response('news/newgoods.html')
