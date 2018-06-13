@@ -12,7 +12,6 @@ from django.core import serializers
 from django.db import connection
 import json
 # Create your views here.
-
 #时间类型json
 class CJsonEncoder(json.JSONEncoder):
     def default(self, obj):
